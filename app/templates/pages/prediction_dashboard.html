@@ -1,0 +1,107 @@
+
+
+
+{% extends "layouts/project_default.html" %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+<!-- dragula css -->
+<link href="/static/assets_advanced/libs/dragula/dragula.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+<style>
+
+    .ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+        stroke: #5a678e;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">Predictions</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Customers</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{project_specific_data[0].pname}}</a></li>
+                            <li class="breadcrumb-item active">Predictions</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+        {% if not project_specific_data[0].model_available %}
+        <div class="row mt--2">
+            <div class="col-md-6 ml-auto mr-auto">
+              <div class="card full-height">
+                <div class="card-body">
+                  <div class="card-title">I want to believe</div>
+                  <div class="card-category">No active model</div>
+                    Looks empty here... Let's train one
+                </div>
+              </div>
+            </div>
+        </div>
+        
+        {% else %}
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">Predictions compared with history data</div>
+                        <img src="/static/uploads/images/{{ model_info['prediction_img']['model_pred_with_train'] }}" alt="Predictions compared with history data image" class="img-fluid card-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">Predictions compared with test data</div>
+                        <img src="/static/uploads/images/{{ model_info['prediction_img']['model_pred_test'] }}" alt="Predictions compared with test data image" class="img-fluid card-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% endif %}
+
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<!-- dragula plugins -->
+<script src="/static/assets_advanced/libs/dragula/dragula.min.js"></script>
+
+<script src="/static/assets_advanced/js/pages/task-kanban.init.js"></script>
+<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	// document is loaded and DOM is ready
+    $( ".dataframe" ).addClass('table table-striped mb-0');
+    $( ".dataframe" ).removeClass('dataframe');
+    $( "table" ).removeAttr( "border" );
+    $( "tr" ).removeAttr( "style" );
+	});
+	
+    </script>
+
+    
+    
+{% endblock javascripts %}

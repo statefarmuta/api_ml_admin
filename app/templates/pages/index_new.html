@@ -1,0 +1,106 @@
+{% extends "layouts/default_new.html" %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+
+{% endblock stylesheets %}
+
+{% block content %}
+<div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">Dashboard</h4>
+
+                    <div class="ml-md-auto py-2 py-md-0">
+                        <a href="#" class="btn btn-white btn-border btn-round mr-2">Manage</a>
+                        <a href="import_new.html" class="btn btn-secondary btn-round">Add Customer</a>
+                      </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+        {% if data|length != 0 %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="">
+                    <div class="table-responsive">
+                        <table class="table project-list-table table-nowrap table-centered table-borderless">
+                            <thead>
+                                <tr>
+                                    <th scope="col" style="width: 100px">#</th>
+
+                                    <th scope="col" class="sorting_asc" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 286px;" aria-sort="ascending" aria-label="Name: activate to sort column descending">Name</th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 418px;" aria-label="Position: activate to sort column ascending">Use Case</th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 215px;" aria-label="Office: activate to sort column ascending">Dataset</th>
+                                    <th scope="col" class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 113px;" aria-label="Age: activate to sort column ascending">Status</th>
+                                    <th scope="col"class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 200px;" aria-label="Start date: activate to sort column ascending">Created</th>
+                                    <th scope="col"class="sorting" tabindex="0" aria-controls="datatable" rowspan="1" colspan="1" style="width: 200px;" aria-label="Start date: activate to sort column ascending"></th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in data %}
+                                <tr>
+                                    <td><img src="/static/assets_advanced/images/companies/img-1.png" alt="" class="avatar-sm"></td>
+                                    <td>
+                                        <h5 class="text-truncate font-size-14"><a href="project_dashboard/{{ item.project_id }}" class="text-dark">{{ item.pname }}</a></h5>
+                                        <!-- <p class="text-muted mb-0">It will be as simple as Occidental</p> -->
+                                    </td>
+                                    <td>Demand Forecasting</td>
+                                    <td><span class="badge badge-primary">{{ item.dataset[0].datasetID }}, {{item.dataset[1].datasetID}}</span></td>
+                                    <td>
+                                        Active
+                                    </td>
+                                    <td>
+                                        {{item.datetime}}
+                                    </td>
+
+                                    <td>
+                                        
+                                        <div class="dropdown">
+                                            <a href="#" class="dropdown-toggle card-drop" data-toggle="dropdown" aria-expanded="false">
+                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                <a class="dropdown-item" href="#">Action</a>
+                                                <a class="dropdown-item" href="#">Another action</a>
+                                                <a class="dropdown-item" href="#">Something else here</a>
+                                            </div>
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row mt--2">
+            <div class="col-md-6 ml-auto mr-auto">
+              <div class="card full-height">
+                <div class="card-body">
+                  <div class="card-title">Projects</div>
+                  <div class="card-category">No active projects</div>
+                    Looks empty here... Let's create a project
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+    
+        <!-- end row -->
+
+    </div>
+    <!-- container-fluid -->
+</div>
+
+{% endblock content %}

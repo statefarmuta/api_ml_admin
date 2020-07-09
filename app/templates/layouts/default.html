@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<title>NovuTree | Data suite </title>
+	<style>
+
+.panel {
+    border: 1px solid rgba(85,104,130,.35);
+    box-shadow: 0 0;
+}
+.comparison-card {
+    display: flex;
+    flex-direction: row;
+}
+.fadeInDown {
+    -webkit-animation-name: fadeInDown;
+    -moz-animation-name: fadeInDown;
+    -o-animation-name: fadeInDown;
+    animation-name: fadeInDown;
+}
+.animated {
+    -webkit-animation-duration: 1s;
+    -moz-animation-duration: 1s;
+    -o-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    -moz-animation-fill-mode: both;
+    -o-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.comparison-card .comparison-card-option {
+    flex-grow: 1;
+    flex-basis: 0;
+    border-right: solid 1px #ccc;
+    position: relative;
+}
+.comparison-card .comparison-card-option::before {
+    content: 'OR';
+    background: #fff;
+    right: 0;
+    border-radius: 20px;
+    position: absolute;
+    top: 40%;
+    padding: 15px 10px;
+    margin-right: -22px;
+    font-weight: 700;
+    color: #787777;
+    font-size: 19px;
+}
+.comparison-card .comparison-card-option .comparison-card-feature {
+    font-size: 32px;
+    color: #fff;
+    background: #2a3646;
+    padding: 10px;
+    margin: 35px auto;
+    width: 189px;
+    border-radius: 30px;
+    display: block;
+}
+.btn-card {
+    background-color: #fafafe;
+    background-image: linear-gradient(#fafafe 0,#fbfbfe 70%);
+    border-color: #dee4e9;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 2px 3px rgba(0,0,0,.04), inset 0 -1px 2px 1px rgba(0,36,60,.01), inset 0 2px 1px 0 #fff;
+    color: #576f7f;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5em;
+    padding-left: 1.5em;
+    padding-right: 1.5em;
+    position: relative;
+    text-decoration: none;
+    transition-duration: 250ms;
+    transition-property: background,box-shadow,color;
+    transition-timing-function: ease-in-out;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+	border: 1px solid rgba(85,104,130,.4);
+    user-select: none;
+}
+.comparison-card .comparison-card-option header {
+    color: #35465e;
+    background: #f9f9fb;
+    padding: 16px;
+    margin: 0;
+    text-transform: uppercase;
+    font-size: 17px;
+    font-weight: 700;
+    position: relative;
+}
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+.fa {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.label.label-success {
+    background: #6aca6a;
+    color: #fff;
+}
+span.label {
+    display: inline;
+    border-radius: 0;
+}
+.label {
+    border: 1px solid rgba(0,0,0,.08);
+    color: #aaa;
+    background: #fafafa;
+}
+.label {
+    padding: .2em .6em;
+}
+.label {
+    display: inline;
+    padding: .2em .6em .3em;
+    font-size: 75%;
+    font-weight: 700;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+}
+.comparison-card .comparison-card-option header .label {
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    margin-left: -53px;
+    border-radius: 3px;
+}
+	</style>
+	<meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+	<link rel="icon" href="/static/assets/img/icon.ico" type="image/x-icon"/>
+	<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<!-- Fonts and icons -->
+	<script src="/static/assets/js/plugin/webfont/webfont.min.js"></script>
+	<script>
+		WebFont.load({
+			google: {"families":["Lato:300,400,700,900"]},
+			custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], 
+			urls: ['/static/assets/css/fonts.min.css']},
+			active: function() {
+				sessionStorage.fonts = true;
+			}
+		});
+	</script>
+
+	<!-- CSS Files -->
+	<link rel="stylesheet" href="/static/assets/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/assets/css/atlantis.min.css">
+
+	<!-- CSS Just for demo purpose, don't include it in your project -->
+	<link rel="stylesheet" href="/static/assets/css/demo.css">
+
+    <!-- Specific CSS goes HERE -->
+    {% block stylesheets %}{% endblock stylesheets %}
+
+</head>
+<body>
+	<div class="wrapper {% block layout %}{% endblock layout %}">
+
+		{% include 'includes/navigation.html' %}
+
+		{% include 'includes/sidenav.html' %}
+
+		<div class="main-panel">
+
+			<div class="content">
+
+				{% block content %}{% endblock content %}
+			
+			</div>
+
+			{% include 'includes/footer.html' %}
+
+		</div>
+		
+		{% include 'includes/aside-settings.html' %}
+
+	</div>
+
+	<!--   Core JS Files   -->
+	<script src="/static/assets/js/core/jquery.3.2.1.min.js"></script>
+	<script src="/static/assets/js/core/popper.min.js"></script>
+	<script src="/static/assets/js/core/bootstrap.min.js"></script>
+
+	<!-- jQuery UI -->
+	<script src="/static/assets/js/plugin/jquery-ui-1.12.1.custom/jquery-ui.min.js"></script>
+	<script src="/static/assets/js/plugin/jquery-ui-touch-punch/jquery.ui.touch-punch.min.js"></script>
+
+	<!-- jQuery Scrollbar -->
+	<script src="/static/assets/js/plugin/jquery-scrollbar/jquery.scrollbar.min.js"></script>
+
+	<!-- Chart JS -->
+	<script src="/static/assets/js/plugin/chart.js/chart.min.js"></script>
+
+	<!-- jQuery Sparkline -->
+	<script src="/static/assets/js/plugin/jquery.sparkline/jquery.sparkline.min.js"></script>
+
+	<!-- Chart Circle -->
+	<script src="/static/assets/js/plugin/chart-circle/circles.min.js"></script>
+
+	<!-- Datatables -->
+	<script src="/static/assets/js/plugin/datatables/datatables.min.js"></script>
+
+	<!-- Bootstrap Notify -->
+	<script src="/static/assets/js/plugin/bootstrap-notify/bootstrap-notify.min.js"></script>
+
+	<!-- jQuery Vector Maps -->
+	<script src="/static/assets/js/plugin/jqvmap/jquery.vmap.min.js"></script>
+	<script src="/static/assets/js/plugin/jqvmap/maps/jquery.vmap.world.js"></script>
+
+	<!-- Sweet Alert -->
+	<script src="/static/assets/js/plugin/sweetalert/sweetalert.min.js"></script>
+
+	<!-- Atlantis JS -->
+	<script src="/static/assets/js/atlantis.min.js"></script>
+
+	<script src="/static/assets/js/setting-demo.js"></script>
+
+	<!-- Specific JS goes HERE -->
+    {% block javascripts %}{% endblock javascripts %}
+	
+</body>
+</html>

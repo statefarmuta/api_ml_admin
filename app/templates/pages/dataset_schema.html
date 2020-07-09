@@ -1,0 +1,82 @@
+
+
+
+{% extends "layouts/project_default.html" %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+<!-- dragula css -->
+<link href="/static/assets_advanced/libs/dragula/dragula.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+<style>
+
+    .ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+        stroke: #5a678e;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">Schema</h4>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Customers</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{project_specific_data[0].pname}}</a></li>
+                            <li class="breadcrumb-item active">Schema</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+          <div class="row">
+              <div class="col-sm">
+                  <div class="card">
+                      <div class="card-body">
+                          
+                        Currently schema logic is not set. <br>
+                        Backend code will expect csv (dataset) to have timestamp, cnt (demand) columns.<br>
+                        Run with sample dataset to see details.<br>
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+  
+
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<!-- dragula plugins -->
+<script src="/static/assets_advanced/libs/dragula/dragula.min.js"></script>
+
+<script src="/static/assets_advanced/js/pages/task-kanban.init.js"></script>
+<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	// document is loaded and DOM is ready
+    $( ".dataframe" ).addClass('table table-striped mb-0');
+    $( ".dataframe" ).removeClass('dataframe');
+    $( "table" ).removeAttr( "border" );
+    $( "tr" ).removeAttr( "style" );
+	});
+	
+    </script>
+
+{% endblock javascripts %}

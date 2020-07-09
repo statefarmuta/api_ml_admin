@@ -1,0 +1,100 @@
+
+
+
+{% extends "layouts/project_default.html" %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+<!-- dragula css -->
+<link href="/static/assets_advanced/libs/dragula/dragula.min.css" rel="stylesheet" type="text/css" />
+
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">Raw Data </h4>
+
+                    <div class="col-sm-6">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{active_dataset}} <i class="mdi mdi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                                {% for data in project_specific_data[0].dataset %}
+                                    <a class="dropdown-item" href="/dataset_raw_data/{{project_specific_data[0].project_id}}/{{data.datasetID}}">{{data.name}}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Projects</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{project_specific_data[0].pname}}</a></li>
+
+                            <li class="breadcrumb-item active">Data Exploration</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{active_dataset}}</h4>
+                        <p class="card-title-desc">
+                            <!-- Create responsive tables by wrapping any <code>.table</code> in <code>.table-responsive</code>
+                            to make them scroll horizontally on small devices (under 768px). -->
+                        </p>
+
+                        <div class="table-responsive">
+
+                            {% for table in tables %}
+                            {{ table|safe }}
+                            {% endfor %}
+                
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<!-- dragula plugins -->
+<script src="/static/assets_advanced/libs/dragula/dragula.min.js"></script>
+
+<script src="/static/assets_advanced/js/pages/task-kanban.init.js"></script>
+
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	// document is loaded and DOM is ready
+    $( ".dataframe" ).addClass('table table-striped mb-0');
+    $( ".dataframe" ).removeClass('dataframe');
+    $( "table" ).removeAttr( "border" );
+    $( "tr" ).removeAttr( "style" );
+	});
+	
+	</script>
+{% endblock javascripts %}

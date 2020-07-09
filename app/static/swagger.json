@@ -1,0 +1,201 @@
+  
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "sean",
+    "version": "1.0.0",
+    "title": "Sate Farm API end point Docs by Devi",
+    "license": {
+      "name": "License Free",
+      "url": "Free Open Source"
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Request",
+      "description": "APIs related to User"
+    }
+  ],
+  "paths": {
+
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "User Request"
+        ],
+        "summary": "Tries to log the user in",
+        "requestBody": {
+          "description": "If user exist and password is match will return a Auth Token, other wise will return error message",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userLoginRequestPostBody"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+         "201": {
+            "description": "OK",
+            "schema": {
+                "$ref": "#/components/schemas/bookRequests"
+            }
+          },
+          "500": {
+            "description": "Try again",
+            "schema": {
+              "$ref": "#/components/schemas/id"
+            }
+          },
+          "404": {
+            "description": "User does not exist."
+          }
+        }
+      }
+    },
+
+
+    "/auth/register": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "ID of the cat that we want to match",
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": [
+          "User Request"
+        ],
+        "summary": "Tries to create an user",
+        "requestBody": {
+          "description": "If user exist then return error message otherwise creates user and returns Auth token. ",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/userRegisterRequest"
+              }
+            }
+          }
+        },
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+         "201": {
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userRegisterRequestResponse"
+                }
+              }
+          },
+          "500": {
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userRegisterRequestResponse"
+                }
+              }
+          },
+          "404": {
+            "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userRegisterRequestResponse"
+                }
+              }
+          }
+        }
+      }
+    }
+  },
+
+
+  "components": {
+    "schemas": {
+      "id": {
+        "properties": {
+          "uuid": {
+            "type": "string"
+          }
+        }
+      },
+      
+      "userLoginRequestPostBody": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "format": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+
+      "userRegisterRequestResponse": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "format": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+
+      "userRegisterRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "format": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "name": {
+            "type": "string",
+            "format": "number"
+          },
+          "lname": {
+            "type": "string",
+            "format": "number"
+          }
+
+        }
+      },
+      "userInfoRequests": {
+        "type": "object",
+        "properties": {
+          "bookRequest": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/bookRequest"
+            }
+          }
+        }
+      }
+    }
+  }
+}

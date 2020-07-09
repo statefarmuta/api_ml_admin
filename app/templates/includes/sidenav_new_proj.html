@@ -1,0 +1,76 @@
+            <!-- ========== Left Sidebar Start ========== -->
+            <div class="vertical-menu">
+
+                <div data-simplebar class="h-100">
+            
+                    <!--- Sidemenu -->
+                    <div id="sidebar-menu">
+                        <!-- Left Menu Start -->
+                        <ul class="metismenu list-unstyled" id="side-menu">
+                            <li class="menu-title">Menu</li>
+            
+                            <li>
+                                <a href="/" class="waves-effect">
+                                    <i class="bx bx-home-circle"></i><span class="badge badge-pill badge-info float-right"></span>
+                                    <span>Dashboard</span>
+                                </a>
+                            </li>
+            
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-layout"></i>
+                                    <span>Customers</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    {% if data|length != 0 %}
+										{% for item in data %}
+										<li>
+											<a href="/project_dashboard/{{item.project_id}}">
+												<span class="sub-item">{{item.pname}}</span>
+											</a>
+										</li>
+										{% endfor %}
+									{% endif %}
+                                </ul>
+                            </li>
+            
+                            <li class="menu-title">Project Tools</li>
+            
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-data"></i>
+                                    <span>Datasets</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="/dataset_schema/{{project_specific_data[0].project_id}}">Schema</a></li>
+                                    <li><a href="/dataset_raw_data/{{project_specific_data[0].project_id}}/{{project_specific_data[0].dataset[0].datasetID}}">Raw Data</a></li>
+                                    <li><a href="/explore_data/{{project_specific_data[0].project_id}}/{{project_specific_data[0].dataset[0].datasetID}}">Data Exploration</a></li>
+                                </ul>
+                            </li>
+            
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-layer"></i>
+                                    <span>Models</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="/metric_dashboard/{{project_specific_data[0].project_id}}">Metric</a></li>
+                                </ul>
+                            </li>
+            
+                            <li>
+                                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                    <i class="bx bx-bot"></i>
+                                    <span>Predictions</span>
+                                </a>
+                                <ul class="sub-menu" aria-expanded="false">
+                                    <li><a href="/predictions_dashboard/{{project_specific_data[0].project_id}}">Dashboard</a></li>
+                                </ul>
+                            </li>
+            
+                        </ul>
+                    </div>
+                    <!-- Sidebar -->
+                </div>
+            </div>
+            <!-- Left Sidebar End -->

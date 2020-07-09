@@ -1,0 +1,189 @@
+
+
+
+{% extends "layouts/project_default.html" %}
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+<!-- dragula css -->
+<link href="/static/assets_advanced/libs/dragula/dragula.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+
+<style>
+
+    .ct-series-a .ct-bar, .ct-series-a .ct-line, .ct-series-a .ct-point, .ct-series-a .ct-slice-donut {
+        stroke: #5a678e;
+    }
+</style>
+{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="page-content">
+    <div class="container-fluid">
+
+        <!-- start page title -->
+        <div class="row">
+            <div class="col-12">
+                <div class="page-title-box d-flex align-items-center justify-content-between">
+                    <h4 class="mb-0 font-size-18">Data Exploration</h4>
+
+                    <div class="col-sm-6">
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {{active_dataset}} <i class="mdi mdi-chevron-down"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="">
+                                {% for data in project_specific_data[0].dataset %}
+                                    <a class="dropdown-item" href="/explore_data/{{project_specific_data[0].project_id}}/{{data.datasetID}}">{{data.name}}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-title-right">
+                        <ol class="breadcrumb m-0">
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">Projects</a></li>
+                            <li class="breadcrumb-item"><a href="javascript: void(0);">{{project_specific_data[0].pname}}</a></li>
+                            <li class="breadcrumb-item active">Data Exploration</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end page title -->
+
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">{{active_dataset}}</h4>
+                        <p class="card-title-desc">
+                            <!-- Create responsive tables by wrapping any <code>.table</code> in <code>.table-responsive</code>
+                            to make them scroll horizontally on small devices (under 768px). -->
+                        </p>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Charts</th>
+                                        <th>Mean</th>
+                                        <th>Min</th>
+                                        <th>Max</th>
+                                        <th>Sum</th>
+                                        <th>Std Dev</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    {% for dict_item_name, dict_item_value in table_data.items() %}
+                                    <tr>
+                                        <th scope="row">{{dict_item_name}}</th>
+                                        {% for key, value in dict_item_value.items() %}
+                                                
+                                                {% if key == "chart" %}
+                                                    {% if value == "numerical" %}
+                                                        <td class="novu_{{dict_item_name[1:]}} ct-chart lineColor lineColor0" style="width:125px; height:auto" id="novu_{{dict_item_name[1:]}}_chart"> </td>
+                                                    {% else %}
+                                                     <td></td>
+                                                    {%endif%}
+                                                {% else %}
+                                                    <td>{{value}}</td>
+                                                {%endif%}
+
+                                        {% endfor %}
+                                    </tr>
+                                    {% endfor %}
+
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="table-responsive">
+
+                            {% for table in tables %}
+                            {{ table|safe }}
+                            {% endfor %}
+                
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+
+{% endblock content %}
+
+{% block javascripts %}
+
+<!-- dragula plugins -->
+<script src="/static/assets_advanced/libs/dragula/dragula.min.js"></script>
+
+<script src="/static/assets_advanced/js/pages/task-kanban.init.js"></script>
+<script src="https://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+	// document is loaded and DOM is ready
+    $( ".dataframe" ).addClass('table table-striped mb-0');
+    $( ".dataframe" ).removeClass('dataframe');
+    $( "table" ).removeAttr( "border" );
+    $( "tr" ).removeAttr( "style" );
+	});
+	
+    </script>
+    
+    <script>
+
+        var num_val = {{numerical_vals|tojson}};
+        var temp = num_val.Id;
+        console.log(temp)
+
+        {% for dict_item_name, dict_item_value in table_data.items() %}
+            {% for key, value in dict_item_value.items() %}
+                    {% if key == "chart" %}
+                        {% if value == "numerical" %}
+                            var data = {
+                                labels: Chartist.times(45),
+                                series: [
+                                num_val["{{dict_item_name}}"]
+                                ]
+                            };
+                            var options = {
+                                width: 120,
+                                height: 100,
+                                axisX: {
+                                    showGrid: false,
+                                    showLabel: false,
+                                    offset: 0
+                                  },
+                                  axisY: {
+                                    showGrid: false,
+                                    showLabel: false,
+                                    offset: 0
+                                  },
+                            }
+                            var myChart = new Chartist.Bar('#novu_{{dict_item_name[1:]}}_chart', data, options);
+
+                        {%endif%}
+                    {%endif%}
+            {% endfor %}
+        {% endfor %}
+
+
+
+
+        
+    </script>
+{% endblock javascripts %}

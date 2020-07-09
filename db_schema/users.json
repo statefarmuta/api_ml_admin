@@ -1,0 +1,25 @@
+[{
+  "_id": {
+    "$oid": "5ec642c25c143263839a3190"
+  },
+  "user_id": 312312432,
+  "fname": "Devi Prasad",
+  "lname": "Tripathy",
+  "uname": "devi",
+  "email": "tripathy.devi7@gmail.com",
+  "password": "06811@Mummy",
+  "profile_pic": "default",
+  "bio": "Hey this is Devi"
+},{
+  "_id": {
+    "$oid": "5ec6569c6eeb406036ef35aa"
+  },
+  "user_id": 312312433,
+  "fname": "Steve",
+  "lname": "Balmer",
+  "uname": "steve",
+  "email": "steve@some.com",
+  "password": "06811@Mummy",
+  "profile_pic": "default",
+  "bio": "Hey this is fname"
+}]

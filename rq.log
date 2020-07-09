@@ -1,0 +1,5 @@
+nohup: ignoring input
+08:13:56 Worker rq:worker:28dd0d8613c64430824a5c01dc72e4a7: started, version 1.4.2
+08:13:56 *** Listening on default...
+08:13:56 Cleaning registries for queue: default
+08:14:07 Warm shut down requested

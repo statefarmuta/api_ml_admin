@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <title>NovuTree | Data suite </title>
+        <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport' />
+        <link rel="icon" href="/static/assets/img/icon.ico" type="image/x-icon"/>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <!-- Fonts and icons -->
+        <script src="/static/assets/js/plugin/webfont/webfont.min.js"></script>
+        <script>
+            WebFont.load({
+                google: {"families":["Lato:300,400,700,900"]},
+                custom: {"families":["Flaticon", "Font Awesome 5 Solid", "Font Awesome 5 Regular", "Font Awesome 5 Brands", "simple-line-icons"], 
+                urls: ['/static/assets/css/fonts.min.css']},
+                active: function() {
+                    sessionStorage.fonts = true;
+                }
+            });
+        </script>
+        <!-- Specific CSS goes HERE -->
+        {% block stylesheets %}{% endblock stylesheets %}
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="/static/assets_advanced/images/favicon.ico">
+        <!-- DataTables -->
+        <link href="/static/assets_advanced/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+        <link href="/static/assets_advanced/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- Responsive datatable examples -->
+        <link href="/static/assets_advanced/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet" type="text/css" />     
+        <!-- Bootstrap Css -->
+        <link href="/static/assets_advanced/css/bootstrap.min.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="/static/assets_advanced/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="/static/assets_advanced/css/app.min.css" id="app-style" rel="stylesheet" type="text/css" />
+
+    </head>
+
+    <body data-sidebar="dark">
+
+        <!-- Begin page -->
+        <div id="layout-wrapper">
+
+            {% include 'includes/header.html' %}
+
+		    {% include 'includes/sidenav_new.html' %}
+            <!-- ============================================================== -->
+            <!-- Start right Content here -->
+            <!-- ============================================================== -->
+            <div class="main-content">
+                {% block content %}{% endblock content %}
+              
+                {% include 'includes/footer_new.html' %}
+
+            </div>
+            <!-- end main content-->
+
+        </div>
+        <!-- END layout-wrapper -->
+        {% include 'includes/rightbar.html' %}
+
+
+ 
+
+        <!-- JAVASCRIPT -->
+        <script src="/static/assets_advanced/libs/jquery/jquery.min.js"></script>
+        <script src="/static/assets_advanced/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="/static/assets_advanced/libs/metismenu/metisMenu.min.js"></script>
+        <script src="/static/assets_advanced/libs/simplebar/simplebar.min.js"></script>
+        <script src="/static/assets_advanced/libs/node-waves/waves.min.js"></script>
+
+        <!-- Required datatable js -->
+        <script src="/static/assets_advanced/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+        <script src="/static/assets_advanced/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+                
+        <!-- Responsive examples -->
+        <script src="/static/assets_advanced/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+        <script src="/static/assets_advanced/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js"></script>
+
+        <!-- Datatable init js -->
+        <script src="/static/assets_advanced/js/pages/datatables.init.js"></script>    
+
+
+        <!-- apexcharts -->
+        <script src="/static/assets_advanced/libs/apexcharts/apexcharts.min.js"></script>
+
+        <script src="/static/assets_advanced/js/pages/dashboard.init.js"></script>
+
+        <!-- App js -->
+        <script src="/static/assets_advanced/js/app.js"></script>
+
+        <!-- Specific JS goes HERE -->
+        {% block javascripts %}{% endblock javascripts %}
+
+    </body>
+
+</html>
+
+
+
