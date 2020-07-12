@@ -1,0 +1,8 @@
+server {
+    listen 0.0.0.0:80;
+    server_name ec2-54-214-218-104.us-west-2.compute.amazonaws.com;
+    location / {
+        include proxy_params;
+        proxy_pass http://unix:/home/ubuntu/apiAdmin/myproject.sock;
+    }
+}
