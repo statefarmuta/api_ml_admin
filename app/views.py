@@ -209,11 +209,12 @@ def create_project():
         # return render_template( 'pages/project.html', data=data, all_data=all_data, tables=html, titles=titles )
 
 @app.route('/create_project_sample/<customer_name>', methods=['POST'])
-def create_project_sample(customer_name):
+def create_project_sample(customer_name, user_id=None):
     
     if not current_user.is_authenticated:
-        print('not logged in')
-        return redirect(url_for('login'))
+        if user_id is None:
+            print('not logged in')
+            return redirect(url_for('login'))
 
     if request.method == 'POST':
 
@@ -553,7 +554,7 @@ def auth_register():
             # generate the auth token
             responseObject = None
             if user:
-                create_project_sample(post_data.get('name'))
+                create_project_sample(post_data.get('name'), user.user_id)
                 responseObject = {
                     'status': 'success',
                     'message': 'Successfully registered.',
