@@ -208,15 +208,12 @@ def create_project():
 
         # return render_template( 'pages/project.html', data=data, all_data=all_data, tables=html, titles=titles )
 
-@app.route('/create_project_sample', methods=['POST'])
-def create_project_sample():
+@app.route('/create_project_sample/<customer_name>', methods=['POST'])
+def create_project_sample(customer_name):
     
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
-
-    data = Project.from_user(current_user.user_id)
-
 
     if request.method == 'POST':
 
@@ -224,11 +221,11 @@ def create_project_sample():
                    {'name':'sample.csv', 'type':'Forecasting Timeseries Data', 'file_attributes':[0,0], 'datasetID':'sample.csv', 'status':'Active'}, 
                    {'name':'sample.csv', 'type':'Item Attributes', 'file_attributes':[0,0], 'datasetID':'sample1.csv', 'status':'Active'}, 
                   ]
-        pname = "Sample Project"
+        pname = customer_name
 	#if pname is None or len(pname) == 0:
            # pname = "Sample"
 
-        ptype = request.form['ptype']
+        ptype = "Forecasting"
         user_id = current_user.user_id
         project_id = int(str(uuid.uuid4().int)[:6])
         date = str(datetime.datetime.utcnow())
@@ -525,11 +522,6 @@ def index(path):
 def sitemap():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'sitemap.xml')
 
-# define the API resources
-registration_view = RegisterAPI.as_view('register_api')
-login_view = LoginAPI.as_view('login_api')
-user_view = UserAPI.as_view('user_api')
-logout_view = LogoutAPI.as_view('logout_api')
 
 # add Rules for API Endpoints
 @app.route('/auth/register', methods=['POST'])
@@ -561,6 +553,7 @@ def auth_register():
             # generate the auth token
             responseObject = None
             if user:
+                create_project_sample(post_data.get('name'))
                 responseObject = {
                     'status': 'success',
                     'message': 'Successfully registered.',
