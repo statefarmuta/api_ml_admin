@@ -11,9 +11,15 @@ from app.models.BlacklistToken import BlacklistToken
 class User(UserMixin, object):
 
     # the main variable in user model
-    def __init__(self, fname, lname, uname, email, password, profile_pic=None, bio=None, user_id=None, _id=None, is_admin=False):
+    def __init__(self, fname, lname, gender, phone, address, city, zipcode, state, uname, email, password, profile_pic=None, bio=None, user_id=None, _id=None, is_admin=False):
         self.fname = fname
         self.lname = lname
+        self.gender = gender
+        self.phone = phone
+        self.address = address
+        self.city = city
+        self.zip = zipcode
+        self.state = state
         self.uname = uname
         self.email = email
         self.password = password
@@ -64,10 +70,10 @@ class User(UserMixin, object):
 
     # the second alternative is with @classmethod
     @classmethod
-    def register(cls, fname, lname, username, email, password):
+    def register(cls, fname, lname, gender, phone, address, city, zipcode, state, username, email, password, is_admin):
         user = cls.get_by_email(email)
         if user is None:
-            new_user = cls(fname, lname, username, email, password)
+            new_user = cls(fname, lname, gender, phone, address, city, zipcode, state, username, email, password, is_admin)
             auth_token = new_user.encode_auth_token(new_user.user_id)
             new_user.save_to_mongo()
             # put the email of the user in a session variable
@@ -136,11 +142,18 @@ class User(UserMixin, object):
             "user_id": self.user_id,
             "fname": self.fname,
             "lname": self.lname,
+            "gender": self.gender,
+            "phone": self.phone,
+            "address":self.address,
+            "city": self.city,
+            "zipcode": self.zip,
+            "state": self.state,
             "uname": self.uname,
             "email": self.email,
             "password": self.password,
             "profile_pic": self.profile_pic,
-            "bio": self.bio
+            "bio": self.bio,
+            "is_admin": self.is_admin
         }
 
 

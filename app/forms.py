@@ -16,6 +16,12 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
 	name        = StringField  (u'Name'      , validators=[DataRequired()])
 	lname 		= StringField  (u'Last Name' , validators=[DataRequired()])
+	gender      = StringField  (u'Gender', validators=[DataRequired()])
+	phone    	= StringField  (u'Phone', validators=[DataRequired()])
+	address  	= StringField  (u'Address', validators=[DataRequired()])
+	city     	= StringField  (u'City', validators=[DataRequired()])
+	zipcode  	= StringField  (u'Zipcode', validators=[DataRequired()])
+	state    	= StringField  (u'State' , validators=[DataRequired()])
 	username    = StringField  (u'Username'  , validators=[DataRequired()])
 	password    = PasswordField(u'Password'  , validators=[DataRequired()])
 	email       = StringField  (u'Email'     , validators=[DataRequired(), Email()])

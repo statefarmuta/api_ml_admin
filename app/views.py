@@ -83,6 +83,12 @@ def register():
         # assign form data to variables
         fname    = request.form.get('name'    , '', type=str)
         lname    = request.form.get('lname'   , '', type=str) 
+        gender   = request.form.get('gender' ,'', type=str)
+        phone    = request.form.get('phone' ,'', type=str)
+        address  = request.form.get('address' ,'', type=str)
+        city     = request.form.get('city' ,'', type=str)
+        zipcode  = request.form.get('zipcode' ,'', type=str)
+        state    = request.form.get('state' ,'', type=str)
         username = request.form.get('username', '', type=str)
         password = request.form.get('password', '', type=str) 
         email    = request.form.get('email'   , '', type=str) 
@@ -100,7 +106,9 @@ def register():
 
             pw_hash = password #bc.generate_password_hash(password)
         
-            user = User.register(fname, lname, username, email, pw_hash)
+            user = User.register(fname=fname, lname=lname, gender=gender, phone=phone, 
+                                 address=address, city=city, zipcode=zipcode, state=state, 
+                                 username=username, email=email, password=pw_hash, is_admin=True)
 
             msg = 'User created, please <a href="' + url_for('login') + '">login</a>'     
 
@@ -135,7 +143,7 @@ def login():
 
         if user:
             #if bc.check_password_hash(user.password, password):
-            if user.password == password:
+            if user.password == password and user.is_admin:
                 print("password matched")
                 login_user(user)
                 Database.insert(collection="login_log", data={
@@ -146,7 +154,7 @@ def login():
                 )
                 return redirect(url_for('index'))
             else:
-                msg = "Wrong password. Please try again."
+                msg = "Wrong password or not Admin. Please try again."
         else:
             msg = "Unknown user"
 
@@ -540,7 +548,12 @@ def auth_register():
     if not user and not user_by_email :
         try:
             pw_hash = post_data.get('password') #bc.generate_password_hash(password)
-            user = User.register(post_data.get('name'), post_data.get('lname'), post_data.get('username'), post_data.get('email'), pw_hash)
+            user = User.register(post_data.get('name'), post_data.get('lname'), 
+                                 post_data.get('gender'), post_data.get('phone'),
+                                 post_data.get('address'), post_data.get('city'),
+                                 post_data.get('zipcode'), post_data.get('state'),
+                                 post_data.get('username'), post_data.get('email'), 
+                                 pw_hash, post_data.get('is_admin'))
 
             # # insert the user
             # db.session.add(user)

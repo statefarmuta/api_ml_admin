@@ -1,0 +1,7 @@
+[2020-05-29 08:46:47 +0000] [15410] [INFO] Starting gunicorn 20.0.4
+[2020-05-29 08:46:47 +0000] [15410] [ERROR] Retrying in 1 second.
+[2020-05-29 08:46:48 +0000] [15410] [ERROR] Retrying in 1 second.
+[2020-05-29 08:46:49 +0000] [15410] [ERROR] Retrying in 1 second.
+[2020-05-29 08:46:50 +0000] [15410] [ERROR] Retrying in 1 second.
+[2020-05-29 08:46:51 +0000] [15410] [ERROR] Retrying in 1 second.
+[2020-05-29 08:46:52 +0000] [15410] [ERROR] Can't connect to ('0.0.0.0', 80)
