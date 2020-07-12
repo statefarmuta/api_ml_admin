@@ -256,6 +256,34 @@ sudo systemctl restart nginx
 
 Now, the site should be visible at http://EC2 instance's Public DNS (IPv4)
 
+### Deploying change
+When you make any changes to the API or code. To reflect the change on the server do the following.
+* First check if the code runs by running:
+```console
+python run.py
+```
+If it runs fine then let's proceed:
+To apply changes to server run follwing:
+```console
+sudo systemctl restart api
+```
+
+Here some more commands that you can run to do house keeping on our app service
+to stop app server service: 
+
+```console
+sudo systemctl stop api
+```
+to start app server service:
+```console
+sudo systemctl start api
+```
+
+to check status of app server service:
+
+```console
+sudo systemctl status api
+```
 
 ## Run Dev Mode
 Install all the dependencies and then create a virtual python eviroment using anaconda or python virtual env.
@@ -271,6 +299,21 @@ python run.py
 ```
 API and web app should now be ready to use.
 
+
+
+Okay that concludes it. To access the database via command line do run *mongo* and then you will need to use NoSql Command line instructions to access database.
+To make the database access via Web frontednd look into https://github.com/mrvautin/adminMongo and how to install it.
+Also Nginx access logs and error log can be found at:
+
+```console
+/var/log/nginx/access.log
+/var/log/nginx/error.log
+```
+You can also look into https://github.com/mthenw/frontail to make access.log and error.log accessed via Web Frontend.
+
+If you plan to use adminMongo and frontail use should look into https://github.com/Unitech/pm2. This will make your life easy. And is great to manage hosted services.
+
+Okay that's about it. Contact me at tripathy.devi7@gmail.com
 
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstatefarmuta%2Fapi_ml_admin.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstatefarmuta%2Fapi_ml_admin?ref=badge_large)
