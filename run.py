@@ -6,4 +6,4 @@ Copyright (c) 2019 Devi
 from app import app, db
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host='0.0.0.0')

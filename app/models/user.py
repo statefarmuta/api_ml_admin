@@ -80,7 +80,7 @@ class User(UserMixin, object):
             # from flask import session
             session['email'] = email
             print(auth_token)
-            return auth_token
+            return new_user, auth_token
         else:
             return None
 

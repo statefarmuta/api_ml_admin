@@ -227,7 +227,6 @@ def create_project_sample(customer_name, user_id=None):
            # pname = "Sample"
 
         ptype = "Forecasting"
-        user_id = current_user.user_id
         project_id = int(str(uuid.uuid4().int)[:6])
         date = str(datetime.datetime.utcnow())
 
@@ -530,6 +529,8 @@ def auth_register():
 
     # get the post data
     post_data = request.get_json()
+    if post_data is None:
+        post_data = post_data.form
     # check if user already exists
     
     # filter User out of database through username
@@ -541,7 +542,7 @@ def auth_register():
     if not user and not user_by_email :
         try:
             pw_hash = post_data.get('password') #bc.generate_password_hash(password)
-            user = User.register(post_data.get('name'), post_data.get('lname'), 
+            user, user_auth = User.register(post_data.get('name'), post_data.get('lname'), 
                                  post_data.get('gender'), post_data.get('phone'),
                                  post_data.get('address'), post_data.get('city'),
                                  post_data.get('zipcode'), post_data.get('state'),
@@ -552,13 +553,17 @@ def auth_register():
             # db.session.add(user)
             # db.session.commit()
             # generate the auth token
+            print(user)
+            user_dict = user.json()
             responseObject = None
             if user:
+                print(user.user_id)
                 create_project_sample(post_data.get('name'), user.user_id)
                 responseObject = {
                     'status': 'success',
                     'message': 'Successfully registered.',
-                    'auth_token': user.decode()
+                    'auth_token': user_auth.decode(),
+                    'user': user_dict
                 }
                 return make_response(jsonify(responseObject)), 201
             else:
@@ -573,6 +578,7 @@ def auth_register():
                 'status': 'fail',
                 'message': 'Some error occurred. Please try again.'
             }
+            print(e)
             return make_response(jsonify(responseObject)), 401
     else:
         responseObject = {
@@ -585,17 +591,21 @@ def auth_register():
 def auth_login():
     # get the post data
     post_data = request.get_json()
+    if post_data is None:
+        post_data = request.form
+    
     try:
         # fetch the user data
         user = User.get_by_username(post_data.get('username'))
-
+        user_dict = user.json()
         if user and user.password == post_data.get('password'):
             auth_token = user.encode_auth_token(user.user_id)
             if auth_token:
                 responseObject = {
                     'status': 'success',
                     'message': 'Successfully logged in.',
-                    'auth_token': auth_token.decode()
+                    'auth_token': auth_token.decode(),
+                    'user': user_dict
                 }
                 return make_response(jsonify(responseObject)), 201
         else:
@@ -657,8 +667,10 @@ def user_view():
 def auth_logout():
     # get auth token
     auth_header = request.headers.get('Authorization')
+    print(auth_header)
+    print(request.headers)
     if auth_header:
-        auth_token = auth_header.split(" ")[1]
+        auth_token = auth_header #.split(" ")[1]
     else:
         auth_token = ''
     if auth_token:

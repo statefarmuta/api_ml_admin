@@ -4,9 +4,6 @@ astroid==2.4.1
 astunparse==1.6.3
 bcrypt==3.1.7
 cachetools==4.1.0
-jwt
-flask_swagger_ui
-flask_restful_swagger
 certifi==2020.4.5.1
 cffi==1.14.0
 chardet==3.0.4
