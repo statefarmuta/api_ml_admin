@@ -9,6 +9,7 @@ cffi==1.14.0
 PyJWT
 flask_restful
 flask_restful_swagger
+pm2
 chardet==3.0.4
 click==7.1.2
 cycler==0.10.0
