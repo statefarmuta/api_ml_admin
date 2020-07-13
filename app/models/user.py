@@ -116,7 +116,7 @@ class User(UserMixin, object):
         """
         try:
             payload = {
-                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=2, seconds=5),
                 'iat': datetime.datetime.utcnow(),
                 'sub': user_id
             }
