@@ -14,8 +14,10 @@ This repo contains API logic, End-to-end ML logic and admin portal UI.
 ### Dev Tutorial
 * Ubuntu video: https://www.youtube.com/watch?v=zXw3ioJmmmQ
 * Mac video: https://www.youtube.com/watch?v=y0qnhue3PJE
-## Deploy Server
+### API Tutorial
+* API (Login, Register, Verify Email, Logout, User Status, User Info) Video: https://www.youtube.com/watch?v=LW5f2yZnJgg
 
+## Deploy Server
 ### Python Realated Installation
 Run the following to make user you have all softwares that are required
 
