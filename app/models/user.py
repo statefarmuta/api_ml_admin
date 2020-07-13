@@ -1,6 +1,6 @@
 import uuid
 import datetime
-from flask import session
+from flask import session, render_template
 from app.common.database import Database
 from flask_login import UserMixin
 import jwt
@@ -73,11 +73,13 @@ class User(UserMixin, object):
     def email_auth(self):
         print("in email auth")
         token = uuid.uuid4().hex
+        links = ['http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com/auth/verify_email/'+str(self.user_id)+'/'+token, 
+                 'http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com:5000/auth/verify_email/'+str(self.user_id)+'/'+token,
+                 'http://127.0.0.1:5000/auth/verify_email/'+str(self.user_id)+'/'+token
+        ]
         Database.insert(collection='email_token', data={'user_id':self.user_id, 'email_token':token})
         msg = Message('Verify Email', sender = 'ingenuity.senior@gmail.com', recipients = [self.email])
-        msg.body = 'Verify you email with this link: http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com/auth/verify_email/'+str(self.user_id)+'/'+token + ' \
-            or using this link if you are running on Dev enviroment on EC2: http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com:5000/auth/verify_email/'+str(self.user_id)+'/'+token + ' \
-                or if you are on your local machine with Dev enviroment http://127.0.0.1:5000/auth/verify_email/'+str(self.user_id)+'/'+token
+        msg.html = render_template('pages/verify_email.html', name=self.fname, links=links)
         mail.send(msg)
     # the second alternative is with @classmethod
     @classmethod
