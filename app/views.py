@@ -522,6 +522,25 @@ def index(path):
 def sitemap():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'sitemap.xml')
 
+@app.route('/auth/verify_email/<user_id>/<email_token>', methods=['GET'])
+@app.route('/auth/verify_email/<user_id>/<email_token>/', methods=['GET'])
+def auth_verify_email(user_id, email_token):
+    user = User.get_by_id(int(user_id))
+    if user.is_email_verified:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Email already verified'
+        }
+        return make_response(jsonify(responseObject)), 202
+    
+    email_auth_data = Database.find_one(collection='email_token', query={'user_id': int(user_id)})
+    if email_auth_data['email_token'] == email_token:
+        Database.update_one(collection="users", query=[{'user_id': int(user_id)}, {"$set": { "is_email_verified": True }} ])
+        responseObject = {
+            'status': 'success',
+            'message': 'Email verified'
+        }
+        return make_response(jsonify(responseObject)), 201
 
 # add Rules for API Endpoints
 @app.route('/auth/register', methods=['POST'])
@@ -598,7 +617,7 @@ def auth_login():
         # fetch the user data
         user = User.get_by_username(post_data.get('username'))
         user_dict = user.json()
-        if user and user.password == post_data.get('password'):
+        if user and user.password == post_data.get('password') and user.is_email_verified:
             auth_token = user.encode_auth_token(user.user_id)
             if auth_token:
                 responseObject = {
@@ -611,7 +630,7 @@ def auth_login():
         else:
             responseObject = {
                 'status': 'fail',
-                'message': 'User does not exist.'
+                'message': 'User does not exist or not verified.'
             }
             return make_response(jsonify(responseObject)), 404
     except Exception as e:

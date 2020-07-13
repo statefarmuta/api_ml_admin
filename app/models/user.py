@@ -5,13 +5,14 @@ from app.common.database import Database
 from flask_login import UserMixin
 import jwt
 import datetime
-from app import app, bc
+from app import app, bc, mail
 from app.models.BlacklistToken import BlacklistToken
+from flask_mail import Mail, Message
 
 class User(UserMixin, object):
 
     # the main variable in user model
-    def __init__(self, fname, lname, gender, phone, address, city, zipcode, state, uname, email, password, profile_pic=None, bio=None, user_id=None, _id=None, is_admin=False):
+    def __init__(self, fname, lname, gender, phone, address, city, zipcode, state, uname, email, password, profile_pic=None, bio=None, user_id=None, _id=None, is_admin=False, is_email_verified=False):
         self.fname = fname
         self.lname = lname
         self.gender = gender
@@ -27,6 +28,7 @@ class User(UserMixin, object):
         self.bio = 'Hey this is ' + 'fname' if bio is None else bio
         self.user_id = int(str(uuid.uuid4().int)[:6]) if user_id is None else user_id
         self.is_admin = is_admin
+        self.is_email_verified = is_email_verified
 
     # use @classmethod for having returned an user object
     @classmethod
@@ -68,6 +70,15 @@ class User(UserMixin, object):
     def get_id(self):
         return (self.user_id)
 
+    def email_auth(self):
+        print("in email auth")
+        token = uuid.uuid4().hex
+        Database.insert(collection='email_token', data={'user_id':self.user_id, 'email_token':token})
+        msg = Message('Verify Email', sender = 'ingenuity.senior@gmail.com', recipients = [self.email])
+        msg.body = 'Verify you email with this link: http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com/auth/verify_email/'+str(self.user_id)+'/'+token + ' \
+            or using this link if you are running on Dev enviroment on EC2: http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com:5000/auth/verify_email/'+str(self.user_id)+'/'+token + ' \
+                or if you are on your local machine with Dev enviroment http://127.0.0.1:5000/auth/verify_email/'+str(self.user_id)+'/'+token
+        mail.send(msg)
     # the second alternative is with @classmethod
     @classmethod
     def register(cls, fname, lname, gender, phone, address, city, zipcode, state, username, email, password, is_admin):
@@ -75,6 +86,7 @@ class User(UserMixin, object):
         if user is None:
             new_user = cls(fname, lname, gender, phone, address, city, zipcode, state, username, email, password, is_admin)
             auth_token = new_user.encode_auth_token(new_user.user_id)
+            new_user.email_auth()
             new_user.save_to_mongo()
             # put the email of the user in a session variable
             # from flask import session
@@ -136,8 +148,6 @@ class User(UserMixin, object):
 
 
     def json(self):
-
-
         return {
             "user_id": self.user_id,
             "fname": self.fname,
@@ -153,7 +163,8 @@ class User(UserMixin, object):
             "password": self.password,
             "profile_pic": self.profile_pic,
             "bio": self.bio,
-            "is_admin": self.is_admin
+            "is_admin": self.is_admin,
+            "is_email_verified": self.is_email_verified
         }
 
 
