@@ -2,8 +2,8 @@ This repo contains API logic, End-to-end ML logic and admin portal UI.
 ## Dependency
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fstatefarmuta%2Fapi_ml_admin.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fstatefarmuta%2Fapi_ml_admin?ref=badge_shield)
 
-1. Redis \
-2. MongoDB \
+1. Redis 
+2. MongoDB 
 3. Python 3.6+
 4. Pip
 ### Optional
@@ -12,8 +12,8 @@ This repo contains API logic, End-to-end ML logic and admin portal UI.
 
 ## Video Instruction
 ### Dev Tutorial
-Ubuntu video: https://www.youtube.com/watch?v=zXw3ioJmmmQ
-Mac video: https://www.youtube.com/watch?v=y0qnhue3PJE
+* Ubuntu video: https://www.youtube.com/watch?v=zXw3ioJmmmQ
+* Mac video: https://www.youtube.com/watch?v=y0qnhue3PJE
 ## Deploy Server
 
 ### Python Realated Installation
