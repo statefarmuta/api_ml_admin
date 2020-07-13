@@ -641,13 +641,63 @@ def auth_login():
         }
         return make_response(jsonify(responseObject)), 500
 
+
 @app.route('/auth/status', methods=['GET'])
 def user_view():
     # get the auth token
     auth_header = request.headers.get('Authorization')
+    data = request.get_json()
+    if data is None:
+        data = request.form
     if auth_header:
         try:
-            auth_token = auth_header.split(" ")[1]
+            auth_token = auth_header.strip()
+        except IndexError:
+            responseObject = {
+                'status': 'fail',
+                'message': 'Bearer token malformed.'
+            }
+            return make_response(jsonify(responseObject)), 401
+    else:
+        auth_token = ''
+    if auth_token:
+        resp = User.decode_auth_token(auth_token)
+        if not isinstance(resp, str):
+            user = User.get_by_id(resp)
+            stats = Database.find_one(collection='user_stats', query={'user_id':resp, 'date':data.get('date')})
+            responseObject = {
+                'status': 'success',
+                'data': {
+                    'user_id': user.user_id,
+                    'email': user.email,
+                    'fname': user.fname,
+                    'lname': user.lname
+                },
+                'user_stats': stats
+            }
+            return make_response(jsonify(responseObject)), 200
+        responseObject = {
+            'status': 'fail',
+            'message': resp
+        }
+        return make_response(jsonify(responseObject)), 401
+    else:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Provide a valid auth token.'
+        }
+        return make_response(jsonify(responseObject)), 401
+
+
+
+
+@app.route('/auth/user_info', methods=['GET', 'POST'])
+def user_info():
+    # get the auth token
+    auth_header = request.headers.get('Authorization')
+    if auth_header:
+        try:
+            auth_token = auth_header.strip()
         except IndexError:
             responseObject = {
                 'status': 'fail',
@@ -662,12 +712,7 @@ def user_view():
             user = User.get_by_id(resp)
             responseObject = {
                 'status': 'success',
-                'data': {
-                    'user_id': user.user_id,
-                    'email': user.email,
-                    'fname': user.fname,
-                    'lname': user.lname
-                }
+                'data': user.json()
             }
             return make_response(jsonify(responseObject)), 200
         responseObject = {
@@ -681,6 +726,8 @@ def user_view():
             'message': 'Provide a valid auth token.'
         }
         return make_response(jsonify(responseObject)), 401
+
+
 
 @app.route('/auth/logout', methods=['POST'])
 def auth_logout():
