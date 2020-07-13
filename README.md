@@ -10,6 +10,10 @@ This repo contains API logic, End-to-end ML logic and admin portal UI.
 5. Docker
 6. Nginx
 
+## Video Instruction
+### Dev Tutorial
+Ubuntu video: https://www.youtube.com/watch?v=zXw3ioJmmmQ
+Mac video: https://www.youtube.com/watch?v=y0qnhue3PJE
 ## Deploy Server
 
 ### Python Realated Installation
