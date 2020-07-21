@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>All Customers in the System</h1>
+
+    <table border="1" >
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for customer in customers %}
+        <tr>
+          <td data-lable ="ID"> {{ customer.id}}</td>
+          <td data-label = "Username"> {{ customer.username}}</td>
+          <td data-label = "Email">{{customer.email }}</td>
+          <td data-label = "Phone">{{ customer.phone }}</td>
+          <td data-label = "First Name">{{ customer.fname}}</td>
+          <td data-label = "Last Name">{{ customer.lname }}</td>
+          <td data-label = "score">{{ customer.score }}</td>
+       </tr>
+     {% endfor %} 
+      </tbody>
+    </table>
+
+{% endblock %}

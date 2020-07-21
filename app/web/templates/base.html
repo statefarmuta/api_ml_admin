@@ -1,0 +1,102 @@
+<html>
+    <head>
+        <style type="text/css">
+            body {
+              font-family: arial;
+                  background:#fff;
+            }
+          
+            table {
+              border: 1px solid #ccc;
+              width: 80%;
+              margin:0;
+              padding:0;
+              border-collapse: collapse;
+              border-spacing: 0;
+              margin: 0 auto;
+            }
+          
+            table tr {
+              border: 1px solid #ddd;
+              padding: 5px;
+            }
+          
+            table th, table td {
+              padding: 10px;
+              text-align: center;
+            }
+          
+            table th {
+              text-transform: uppercase;
+              font-size: 14px;
+              letter-spacing: 1px;
+            }
+          
+            @media screen and (max-width: 600px) {
+          
+              table {
+                border: 0;
+              }
+          
+              table thead {
+                display: none;
+              }
+          
+              table tr {
+                margin-bottom: 10px;
+                display: block;
+                border-bottom: 2px solid #ddd;
+              }
+          
+              table td {
+                display: block;
+                text-align: right;
+                font-size: 13px;
+                border-bottom: 1px dotted #ccc;
+              }
+          
+              table td:last-child {
+                border-bottom: 0;
+              }
+          
+              table td:before {
+                content: attr(data-label);
+                float: left;
+                text-transform: uppercase;
+                font-weight: bold;
+              }
+            }
+          
+          .note{max-width: 80%; margin: 0 auto;}
+              </style>
+        {% if title %}
+        <title>{{ title }} - Statefarm Fitbit internal system</title>
+        {% else %}
+        <title>Welcome to Statefarm Fitbit</title>
+        {% endif %}
+    </head>
+    <body>
+        <div>
+            <img src="https://static1.st8fm.com/en_US/img/logos/state-farm-logo-red.svg" alt="" width="160" height="100">
+            <a href="{{ url_for('web.index') }}">Home</a>
+            {% if 'user' in session %}
+            <a href="{{ url_for('web.mydashboard') }}">My Dashboard</a>
+            <a href="{{ url_for('web.myprofile') }}">My Profile</a>
+            <a href="{{ url_for('web.logout') }}">Logout</a>
+            {% else %}
+            <a href="{{ url_for('web.login') }}">Login</a>
+            {% endif %}
+        </div>
+        <hr>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </body>
+</html>

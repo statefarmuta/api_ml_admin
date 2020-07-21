@@ -13,6 +13,11 @@ from flask_bcrypt           import Bcrypt
 from app.common.database    import Database
 from flask_mail             import Mail, Message
 
+#### blueprint
+from flask import Blueprint
+from flask_session import Session
+from flask import session
+#### blueprint
 
 # Redis
 import redis
@@ -23,6 +28,16 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 mail= Mail(app)
+
+####blueprint
+from app.web import bp as web_bp
+app.register_blueprint(web_bp,url_prefix='/web')
+app.secret_key = 'fegrweiugwoibgpiw40pt8940gtbuorwbgo408bg80pw4'
+app.config['SESSION_TYPE'] = 'filesystem'
+sess = Session()
+sess.init_app(app)
+####blueprint
+
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
