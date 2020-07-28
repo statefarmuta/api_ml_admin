@@ -5,7 +5,7 @@ from flask import render_template, flash, redirect, url_for, request
 #from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app.web import bp
-from app.web.forms import LoginForm, RegistrationForm, changePasswordForm, updateProfileForm
+from app.web.forms import LoginForm, RegistrationForm, changePasswordForm, updateProfileForm,  RequestResetForm
 from app.web.models.sessionuser import Session_User
 import requests
 from flask_session import Session
@@ -86,6 +86,25 @@ def register():
             return redirect(url_for('web.login'))
         flash('The username or email have already registered.')
     return render_template('/register.html', title='Register', form=form)
+
+#password reset with token
+@bp.route("/reset_password_request",methods=['GET','POST'])
+def reset_request():
+    #if current_user.is_authenticated:
+        #return redirect(url_for('index'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        jsonPayload={
+            'email':form.email.data,
+        }
+        result = requests.post('http://0.0.0.0:5000/auth/reset_password_request', json=jsonPayload)
+        result = result.json()
+        if result['status'] == 'success':
+            flash('Email has been sent to reset your password','_info_')
+            return redirect(url_for('web.login'))
+     
+        flash('We did not find that email address in our records. Please check and re-enter it or register for a new account.','_info_')
+    return render_template('/reset_request.html', title='Reset Password', form=form)
 
 #show dashboard
 @bp.route('/mydashboard', methods=['GET'])

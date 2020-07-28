@@ -15,13 +15,14 @@ from flask               import Blueprint, render_template, make_response, jsoni
 from flask_login         import login_user, logout_user, current_user, login_required
 from werkzeug.exceptions import HTTPException, NotFound, abort
 from werkzeug.utils import secure_filename
+from flask_mail import Message
 
 # App modules
-from app        import app, lm, db, bc, r, q
+from app        import app, lm, db, bc, r, q , mail
 from app.models.user import User
 from app.models.project import Project
 from app.models.business_logic.test import Analysis
-from app.forms  import LoginForm, RegisterForm
+from app.forms  import LoginForm, RegisterForm, ResetPasswordForm
 from app.common.database import Database
 from app.auth import RegisterAPI, LoginAPI, LogoutAPI, UserAPI
 from app.models.BlacklistToken import BlacklistToken
@@ -543,6 +544,65 @@ def auth_verify_email(user_id, email_token):
         return make_response(jsonify(responseObject)), 201
 
 # add Rules for API Endpoints
+
+@app.route('/auth/reset_password_request',methods=['POST'])
+def auth_reset_password():
+ # get the post data
+    post_data = request.get_json()
+    if post_data is  None:
+        post_data = request.form
+
+    try:
+        user = User.get_by_email(post_data.get('email'))
+        if user:
+            token = user.get_reset_token()
+            msg = Message('Password Reset Request',
+                        sender='ingenuity.senior@gmail.com',
+                        recipients=[user.email])
+            
+            msg.body = f'''To reset your password, visit the following link:
+                    {url_for('reset_token', token=token, _external=True)}
+            If you did not make this request then simply ignore this email and no changes will be made.
+            Sincerely, 
+            StateFarm
+            '''
+            mail.send(msg)
+            responseObject = {
+                    'status': 'success',
+                    'message': 'Reset link sent.'    
+                }
+            return make_response(jsonify(responseObject)), 201
+        else:
+            responseObject = {
+            'status': 'fail',
+            'message': 'Some error occurred with database. Please try again.'
+            }
+            return make_response(jsonify(responseObject)), 500
+    except Exception as e:
+        print(e)
+        responseObject = {
+            'status': 'fail',
+            'message': 'Try again'
+        }
+        return make_response(jsonify(responseObject)), 500
+     
+
+@app.route("/reset_token/<token>",methods=['GET','POST'])
+def reset_token(token):
+    user=User.verify_reset_token(token)
+    if user is None:
+        flash('An invalid token','warning')
+        return redirect(url_for('web.reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        pw_hash = form.password.data
+        Database.update_one(collection="users", query=[{'user_id':user.user_id}, {"$set": { "password": pw_hash }} ])
+        flash('Your password has been updated! you are now able to login')
+        return redirect(url_for('web.login'))
+    return render_template('pages/reset_token.html', title='Reset password', form=form)
+
+
+
 @app.route('/auth/register', methods=['POST'])
 def auth_register():
 

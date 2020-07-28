@@ -1,5 +1,6 @@
 import uuid
 import datetime
+from time import time
 from flask import session, render_template
 from app.common.database import Database
 from flask_login import UserMixin
@@ -8,6 +9,8 @@ import datetime
 from app import app, bc, mail
 from app.models.BlacklistToken import BlacklistToken
 from flask_mail import Mail, Message
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class User(UserMixin, object):
 
@@ -29,6 +32,26 @@ class User(UserMixin, object):
         self.user_id = int(str(uuid.uuid4().int)[:6]) if user_id is None else user_id
         self.is_admin = is_admin
         self.is_email_verified = is_email_verified
+
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(self.password)
+
+    def get_reset_token(self, expires_in=600):
+        return jwt.encode(
+            {'reset_token': self.user_id, 'exp': time() + expires_in},
+            app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+    
+    @staticmethod
+    def verify_reset_token(token):
+        try:
+            user_id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['reset_token']
+        except:
+            return
+        #return User.get_id(user_id)
+        return User.get_by_id(user_id)
+
 
     # use @classmethod for having returned an user object
     @classmethod

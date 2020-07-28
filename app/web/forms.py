@@ -27,6 +27,10 @@ class RegistrationForm(FlaskForm):
     zipcode = StringField('zipcode')
     state = StringField('state')
     submit = SubmitField('register')
+
+class RequestResetForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
     
 class changePasswordForm(FlaskForm):
     password = PasswordField('password', validators=[DataRequired()])
