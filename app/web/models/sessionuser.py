@@ -5,7 +5,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 class Session_User():
 
-    def __init__(self, username, hash):
+    def __init__(self, username, hash, uid):
         self.name = username
         self.hash = hash
+        self.uid = uid
           

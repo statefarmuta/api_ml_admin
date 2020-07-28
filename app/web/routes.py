@@ -37,7 +37,7 @@ def login():
 
         result = result.json()
         if result['status'] != 'fail':
-            user = Session_User(form.username.data,result['auth_token'])
+            user = Session_User(form.username.data,result['auth_token'],result['user']['user_id'])
             
             session['user'] = user
             next_page = request.args.get('next')
@@ -99,7 +99,7 @@ def mydashboard():
 @bp.route('/myprofile', methods=['GET'])
 def myprofile():
     if 'user' in session:
-        userProfile = User.get_by_username(session['user'].name)
+        userProfile = User.get_by_id(session['user'].uid)
         return render_template('/myprofile.html', user=userProfile)
     else:
         return redirect(url_for('web.login'))
@@ -110,12 +110,16 @@ def edit_profile():
     if 'user' in session:
         form = updateProfileForm()
         if form.validate_on_submit():
-            Database.update_one(collection="users", query=[{'uname':session['user'].name}, \
-                {"$set":{"fname":form.fname.data,"lname":form.lname.data,"bio":form.bio.data \
+            Database.update_one(collection="users", query=[{'user_id':session['user'].uid}, \
+                {"$set":{"uname":form.username.data,"fname":form.fname.data,"lname":form.lname.data,"bio":form.bio.data \
                     ,"phone":form.phone.data,"address":form.address.data,"city":form.city.data \
                         ,"zipcode":form.zipcode.data,"state":form.state.data}}])
             flash('Your profile has been updated.')
-            userProfile = User.get_by_username(session['user'].name)
+            #change session username
+            session['user'].name = form.username.data
+            #print(session['user'].name)
+            #return to myprofile page
+            userProfile = User.get_by_id(session['user'].uid)
             return render_template('/myprofile.html', user=userProfile)
         return render_template('/updateProfile.html', title='Update', form=form)
     else:
