@@ -115,12 +115,23 @@ def edit_profile():
                     ,"phone":form.phone.data,"address":form.address.data,"city":form.city.data \
                         ,"zipcode":form.zipcode.data,"state":form.state.data}}])
             flash('Your profile has been updated.')
-            #change session username
+            #change session username to newone once update the database
             session['user'].name = form.username.data
             #print(session['user'].name)
             #return to myprofile page
             userProfile = User.get_by_id(session['user'].uid)
             return render_template('/myprofile.html', user=userProfile)
+        elif request.method == 'GET':
+            userProfile = User.get_by_id(session['user'].uid)
+            form.username.data = userProfile.uname
+            form.fname.data = userProfile.fname
+            form.lname.data = userProfile.lname
+            form.bio.data = userProfile.bio
+            form.phone.data = userProfile.phone
+            form.address.data = userProfile.address
+            form.city.data = userProfile.city
+            form.zipcode.data = userProfile.zip
+            form.state.data = userProfile.state
         return render_template('/updateProfile.html', title='Update', form=form)
     else:
         return redirect(url_for('web.index'))
