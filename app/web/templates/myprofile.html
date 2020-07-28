@@ -2,7 +2,38 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>This is my account.</h1>
+<table>
+
+<tr>
+  <td>
+    <p>Username: {{ user.uname }}</p>
+    <p>First Name: {{ user.fname }} , Last Name: {{ user.lname }}</p>
+    <p>Gender: {{ user.gender }}</p>
+    <p>Bio: {{ user.bio }}</p>
+    
+  </td>               
+</tr>
+<tr>
+  <td>
+    <p>Email: {{ user.email }}</p>
+    <p>PhoneNumber: {{ user.phone }}</p>
+  </td>                
+</tr>
+<tr>
+  <td>
+    <p>Addess: {{ user.address}}</p> 
+    <p>City: {{ user.city}} State:{{ user.zip}}</p> 
+    <p>Zipcode: {{ user.zip}}</p>
+  </td>              
+</tr>
+<tr>
+  <td>
+<p><a href="{{ url_for('web.edit_profile') }}">Edit Profile</a></p> 
+<p><a href="{{ url_for('web.change_password') }}">Change Password</a></p>
+</td>              
+</tr>
+
+</table>
 
                                       
 

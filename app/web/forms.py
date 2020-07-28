@@ -24,5 +24,18 @@ class RegistrationForm(FlaskForm):
     state = StringField('state')
     submit = SubmitField('register')
     
+class changePasswordForm(FlaskForm):
+    password = PasswordField('password', validators=[DataRequired()])
+    submit = SubmitField('Change')
 
-
+class updateProfileForm(FlaskForm):
+    #username = StringField('username', validators=[DataRequired()])
+    fname = StringField('fname', validators=[DataRequired()])
+    lname = StringField('lname', validators=[DataRequired()])
+    bio = StringField('bio')
+    phone = StringField('phone')
+    address = StringField('address' )
+    city = StringField('city')
+    zipcode = StringField('zipcode')
+    state = StringField('state')
+    submit = SubmitField('Update')

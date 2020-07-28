@@ -1,18 +1,17 @@
-#
+#init version is created by Web application team, Wei Shi
 
 
 from flask import render_template, flash, redirect, url_for, request
 #from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app.web import bp
-from app.web.forms import LoginForm, RegistrationForm
+from app.web.forms import LoginForm, RegistrationForm, changePasswordForm, updateProfileForm
 from app.models.sessionuser import Session_User
 import requests
 from flask_session import Session
 from flask import session
-
-
-
+from app.web.user import User
+from app.common.database import Database
 
 
 @bp.route('/')
@@ -25,7 +24,7 @@ def index():
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if 'user' in session:
-        print('User Found')
+        #print('User Found')
         return render_template('/index.html', data=session['user'].name)
     form = LoginForm()
     jsonPayload = None
@@ -38,7 +37,7 @@ def login():
 
         result = result.json()
         if result['status'] != 'fail':
-            user = Session_User(form.username.data,result['auth_token'],result['user']['user_id'])
+            user = Session_User(form.username.data,result['auth_token'])
             
             session['user'] = user
             next_page = request.args.get('next')
@@ -64,7 +63,7 @@ def register():
     form = RegistrationForm()
     jsonPayload = None
     if form.validate_on_submit():
-        print('passed')
+        
         jsonPayload = {
                 'username':form.username.data,
                 'email':form.email.data,
@@ -78,7 +77,7 @@ def register():
                 'zipcode':form.zipcode.data,
                 'state':form.state.data  
             } 
-        print(jsonPayload)   
+        #print(jsonPayload)   
         result = requests.post('http://0.0.0.0:5000/auth/register', json=jsonPayload)
         
         result = result.json()
@@ -100,6 +99,37 @@ def mydashboard():
 @bp.route('/myprofile', methods=['GET'])
 def myprofile():
     if 'user' in session:
-        return render_template('/myprofile.html')
+        userProfile = User.get_by_username(session['user'].name)
+        return render_template('/myprofile.html', user=userProfile)
     else:
         return redirect(url_for('web.login'))
+
+@bp.route('/edit_profile', methods=['GET','POST'])
+def edit_profile():
+    if 'user' in session:
+        form = updateProfileForm()
+        if form.validate_on_submit():
+            Database.update_one(collection="users", query=[{'uname':session['user'].name}, \
+                {"$set":{"fname":form.fname.data,"lname":form.lname.data,"bio":form.bio.data \
+                    ,"phone":form.phone.data,"address":form.address.data,"city":form.city.data \
+                        ,"zipcode":form.zipcode.data,"state":form.state.data}}])
+            flash('Your profile has been updated.')
+            userProfile = User.get_by_username(session['user'].name)
+            return render_template('/myprofile.html', user=userProfile)
+        return render_template('/updateProfile.html', title='Update', form=form)
+    else:
+        return redirect(url_for('web.index'))
+
+
+@bp.route('/change_password', methods=['GET','POST'])
+def change_password():
+    if 'user' in session:
+        form = changePasswordForm()
+        if form.validate_on_submit():
+            Database.update_one(collection="users", query=[{'uname':session['user'].name},{"$set":{"password":form.password.data}}])
+            flash('Your password has been changed.')
+            userProfile = User.get_by_username(session['user'].name)
+            return render_template('/myprofile.html', user=userProfile)
+        return render_template('/changePassword.html', title='Change Password', form=form)
+    else:
+        return redirect(url_for('web.index'))
