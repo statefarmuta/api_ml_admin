@@ -6,21 +6,21 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from app.web import bp
 from app.web.forms import LoginForm, RegistrationForm, changePasswordForm, updateProfileForm
-from app.models.sessionuser import Session_User
+from app.web.models.sessionuser import Session_User
 import requests
 from flask_session import Session
 from flask import session
-from app.web.user import User
+from app.web.models.user import User
 from app.common.database import Database
 
-
+#return a index.html
 @bp.route('/')
 @bp.route('/index')
 def index():
         return render_template('/index.html')
     
 
-
+#user login, init version create by Devi.
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if 'user' in session:
@@ -49,13 +49,13 @@ def login():
             return redirect(url_for('web.login'))
     return render_template('/login.html', title='Sign In', form=form)
 
-
+#user log out, init version create by Devi.
 @bp.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('web.index'))
 
-
+#user register,
 @bp.route('/register', methods=['GET','POST'])
 def register():
     if 'user' in session:
@@ -87,7 +87,7 @@ def register():
         flash('The username or email have already registered.')
     return render_template('/register.html', title='Register', form=form)
 
-
+#show dashboard
 @bp.route('/mydashboard', methods=['GET'])
 def mydashboard():
     if 'user' in session:
@@ -95,7 +95,7 @@ def mydashboard():
     else:
         return redirect(url_for('web.login'))
     
-   
+#show profile 
 @bp.route('/myprofile', methods=['GET'])
 def myprofile():
     if 'user' in session:
@@ -104,6 +104,7 @@ def myprofile():
     else:
         return redirect(url_for('web.login'))
 
+#update profile
 @bp.route('/edit_profile', methods=['GET','POST'])
 def edit_profile():
     if 'user' in session:
@@ -120,7 +121,7 @@ def edit_profile():
     else:
         return redirect(url_for('web.index'))
 
-
+#change password
 @bp.route('/change_password', methods=['GET','POST'])
 def change_password():
     if 'user' in session:

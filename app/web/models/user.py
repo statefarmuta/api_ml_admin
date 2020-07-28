@@ -1,3 +1,4 @@
+# directly import this model for models have a circle import issue. need copy to this into blue print folder. #Wei,shi
 import uuid
 import datetime
 from flask import session, render_template
