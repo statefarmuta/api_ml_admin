@@ -17,6 +17,7 @@ from flask_mail             import Mail, Message
 from flask import Blueprint
 from flask_session import Session
 from flask import session
+from flask_pymongo import PyMongo
 #### blueprint
 
 # Redis
@@ -30,12 +31,15 @@ app = Flask(__name__)
 mail= Mail(app)
 
 ####blueprint
-from app.web import bp as web_bp
-app.register_blueprint(web_bp,url_prefix='/web')
 app.secret_key = 'fegrweiugwoibgpiw40pt8940gtbuorwbgo408bg80pw4'
 app.config['SESSION_TYPE'] = 'filesystem'
 sess = Session()
 sess.init_app(app)
+app.config['MONGO_DBNAME'] = 'novutree'
+app.config['MONGO_URI'] = 'mongodb://localhost:27017/novutree'
+mongo = PyMongo(app)
+from app.web import bp as web_bp
+app.register_blueprint(web_bp,url_prefix='/web')
 ####blueprint
 
 

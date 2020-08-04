@@ -3,10 +3,17 @@
 
 {% block content %}
 <table>
-
+ 
 <tr>
   <td>
     <p>Username: {{ user.uname }}</p>
+    <img src="{{url_for('web.request_file',filename=user['profile_pic'])}}" style="width:160px;height:160px;">
+    <form action = "http://0.0.0.0:5000/web/uploader" method = "POST" 
+         enctype = "multipart/form-data">
+         <input type = "file" name = "profile_pic" />
+         <input type = "submit" value ="Upload"/>
+    </form>
+    
     <p>First Name: {{ user.fname }} , Last Name: {{ user.lname }}</p>
     <p>Gender: {{ user.gender }}</p>
     <p>Bio: {{ user.bio }}</p>

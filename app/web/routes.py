@@ -12,6 +12,7 @@ from flask_session import Session
 from flask import session
 from app.web.models.user import User
 from app.common.database import Database
+from app import mongo
 
 #return a index.html
 @bp.route('/')
@@ -149,3 +150,24 @@ def change_password():
         return render_template('/changePassword.html', title='Change Password', form=form)
     else:
         return redirect(url_for('web.index'))
+
+@bp.route('/request_file/<filename>')
+def request_file(filename):
+    return mongo.send_file(filename)
+
+@bp.route('/uploader', methods=['GET','POST'])
+def upload_file():
+    if 'user' in session:
+        if 'profile_pic' in request.files:
+            profile_pic = request.files['profile_pic']
+            mongo.save_file(profile_pic.filename, profile_pic)
+            
+            query = { 'uname':session['user'].name}
+            updates = { "$set": { "profile_pic": profile_pic.filename } }
+            mongo.db.users.update_one(query, updates)
+            return redirect(url_for('web.myprofile'))
+                
+    else:
+        return redirect(url_for('web.index'))
+
+

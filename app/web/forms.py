@@ -56,3 +56,6 @@ class updateProfileForm(FlaskForm):
     #    user = Database.find_one(collection ="users", query={'email':email.data})
     #    if user is not None:
     #        raise ValidationError('Please use a different email address.')
+
+
+    
