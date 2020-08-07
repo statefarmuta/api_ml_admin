@@ -170,17 +170,29 @@ def change_password():
     else:
         return redirect(url_for('web.index'))
 
+#request a pic for the profile
 @bp.route('/request_file/<filename>')
 def request_file(filename):
-    return mongo.send_file(filename)
+    if 'user' in session:
+        #if the filename is default. send the default.jpg.
+        if filename == 'default':
+            return mongo.send_file('default.jpg')
+        else:    
+            return mongo.send_file(filename)
+    # if user isn't exist.    
+    else:
+        return redirect(url_for('web.index'))
 
+#upload a pic to 
 @bp.route('/uploader', methods=['GET','POST'])
 def upload_file():
     if 'user' in session:
         if 'profile_pic' in request.files:
+            #upload the pic
             profile_pic = request.files['profile_pic']
             mongo.save_file(profile_pic.filename, profile_pic)
-            
+            #delete the old one
+
             query = { 'uname':session['user'].name}
             updates = { "$set": { "profile_pic": profile_pic.filename } }
             mongo.db.users.update_one(query, updates)
