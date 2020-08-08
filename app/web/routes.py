@@ -176,8 +176,8 @@ def request_file(filename):
     if 'user' in session:
         #if the filename is default. send the default.jpg
         if filename == 'default':
-            #need to upload a default.jpg to the database when depoly the system to AWS.
-            return mongo.send_file('default.jpg')
+            #need to upload a pic 'default' to the database when depoly the system to AWS.
+            return mongo.send_file('default')
         else:    
             return mongo.send_file(filename)
     # if user isn't exist.    
@@ -205,7 +205,7 @@ def upload_file():
                 mongo.db.users.update_one(query, updates)
 
                 # delete old file.
-                if previousFilename != 'default'
+                if previousFilename != 'default':
                     # get fs.files _id for previousfile
                     fileobject = mongo.db.fs.files.find({'filename':previousFilename})
                     #print(fileobject[0]['_id'])
@@ -214,7 +214,7 @@ def upload_file():
                     #delete fs.files                                                                    
                     mongo.db.fs.files.remove({ '_id' : fileobject[0]['_id'] })
             else:
-                flash('Please use a different file name')
+                flash('The filename has been used. Please choice a different file name.')
                 
             return redirect(url_for('web.myprofile'))           
     else:
