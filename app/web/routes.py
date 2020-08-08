@@ -174,8 +174,9 @@ def change_password():
 @bp.route('/request_file/<filename>')
 def request_file(filename):
     if 'user' in session:
-        #if the filename is default. send the default.jpg.
+        #if the filename is default. send the default.jpg
         if filename == 'default':
+            #need to upload a default.jpg to the database when depoly the system to AWS.
             return mongo.send_file('default.jpg')
         else:    
             return mongo.send_file(filename)
@@ -188,16 +189,34 @@ def request_file(filename):
 def upload_file():
     if 'user' in session:
         if 'profile_pic' in request.files:
-            #upload the pic
+            #make sure that the filename is unique
             profile_pic = request.files['profile_pic']
-            mongo.save_file(profile_pic.filename, profile_pic)
-            #delete the old one
+            files = mongo.db.fs.files.find({'filename':profile_pic.filename}).count()
+            #print(files)
+            if files ==0: # if files is not empty
+                #upload the pic
+                mongo.save_file(profile_pic.filename, profile_pic)
+                #get previous filename
+                user = User.get_by_username(session['user'].name)
+                previousFilename = user.profile_pic
+                #update the profile
+                query = { 'uname':session['user'].name}
+                updates = { "$set": { "profile_pic": profile_pic.filename } }
+                mongo.db.users.update_one(query, updates)
 
-            query = { 'uname':session['user'].name}
-            updates = { "$set": { "profile_pic": profile_pic.filename } }
-            mongo.db.users.update_one(query, updates)
-            return redirect(url_for('web.myprofile'))
+                # delete old file.
+                if previousFilename != 'default'
+                    # get fs.files _id for previousfile
+                    fileobject = mongo.db.fs.files.find({'filename':previousFilename})
+                    #print(fileobject[0]['_id'])
+                    #delete fs.chunks
+                    mongo.db.fs.chunks.remove({ 'files_id' : fileobject[0]['_id'] })
+                    #delete fs.files                                                                    
+                    mongo.db.fs.files.remove({ '_id' : fileobject[0]['_id'] })
+            else:
+                flash('Please use a different file name')
                 
+            return redirect(url_for('web.myprofile'))           
     else:
         return redirect(url_for('web.index'))
 
