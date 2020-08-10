@@ -1,6 +1,6 @@
 #init version is created by Web application team, Wei Shi
 
-
+from datetime import date
 from flask import render_template, flash, redirect, url_for, request
 #from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
@@ -21,7 +21,7 @@ def index():
         return render_template('/index.html')
     
 
-#user login, init version create by Devi.
+#user login, init version create by Devi. I removed flask_login.
 @bp.route('/login', methods=['GET', 'POST'])
 def login():
     if 'user' in session:
@@ -88,7 +88,7 @@ def register():
         flash('The username or email have already registered.')
     return render_template('/register.html', title='Register', form=form)
 
-#password reset with token
+#password reset with token 
 @bp.route("/reset_password_request",methods=['GET','POST'])
 def reset_request():
     #if current_user.is_authenticated:
@@ -111,7 +111,34 @@ def reset_request():
 @bp.route('/mydashboard', methods=['GET'])
 def mydashboard():
     if 'user' in session:
-        return render_template('/mydashboard.html')
+        today = date.today()
+        todayData = mongo.db.user_stats.find_one({'user_id':session['user'].uid,'date':today.strftime("%Y-%m-%d")})
+        #print(today.strftime("%Y-%m-%d"))
+        #print(todayData)
+        #print(todayData['steps'])
+        #print(todayData['steps'][1])
+        if todayData is None:
+            todayData['steps']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            todayData['calories']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            todayData['heart_rate']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            todayData['rating']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            todayTotal=[0,0,0,0]
+        else:
+            totalsteps=0
+            totalcalories=0
+            totalheart_rate=0
+            totalrating=0
+            for steps in todayData['steps']:
+                totalsteps +=  steps 
+            for calories in todayData['calories']:
+                totalcalories +=  calories 
+            for heart_rate in todayData['heart_rate']:
+                totalheart_rate += heart_rate 
+            for rating in todayData['rating']:
+                totalrating += rating
+            todayTotal =[totalsteps,totalcalories,totalheart_rate,totalrating]
+
+        return render_template('/mydashboard.html',totalToday= todayTotal,todayData=todayData)
     else:
         return redirect(url_for('web.login'))
     
@@ -162,8 +189,10 @@ def change_password():
     if 'user' in session:
         form = changePasswordForm()
         if form.validate_on_submit():
+            #update the password
             Database.update_one(collection="users", query=[{'uname':session['user'].name},{"$set":{"password":form.password.data}}])
             flash('Your password has been changed.')
+            #back to profile page
             userProfile = User.get_by_username(session['user'].name)
             return render_template('/myprofile.html', user=userProfile)
         return render_template('/changePassword.html', title='Change Password', form=form)
@@ -184,7 +213,7 @@ def request_file(filename):
     else:
         return redirect(url_for('web.index'))
 
-#upload a pic to 
+#upload a pic to the database
 @bp.route('/uploader', methods=['GET','POST'])
 def upload_file():
     if 'user' in session:
@@ -204,14 +233,14 @@ def upload_file():
                 updates = { "$set": { "profile_pic": profile_pic.filename } }
                 mongo.db.users.update_one(query, updates)
 
-                # delete old file.
+                # delete the old file if it isn't default
                 if previousFilename != 'default':
-                    # get fs.files _id for previousfile
+                    # get fs.files _id for previousfile #find_one doesn't work. 
                     fileobject = mongo.db.fs.files.find({'filename':previousFilename})
                     #print(fileobject[0]['_id'])
-                    #delete fs.chunks
+                    #delete the old file chunks from fs.chunks
                     mongo.db.fs.chunks.remove({ 'files_id' : fileobject[0]['_id'] })
-                    #delete fs.files                                                                    
+                    #delete the old file record from fs.files                                                                    
                     mongo.db.fs.files.remove({ '_id' : fileobject[0]['_id'] })
             else:
                 flash('The filename has been used. Please choice a different file name.')
