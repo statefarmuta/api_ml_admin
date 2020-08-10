@@ -107,7 +107,7 @@ def reset_request():
         flash('We did not find that email address in our records. Please check and re-enter it or register for a new account.','_info_')
     return render_template('/reset_request.html', title='Reset Password', form=form)
 
-#show dashboard
+#show today's data on the dashboard
 @bp.route('/mydashboard', methods=['GET'])
 def mydashboard():
     if 'user' in session:
@@ -117,6 +117,7 @@ def mydashboard():
         #print(todayData)
         #print(todayData['steps'])
         #print(todayData['steps'][1])
+        #if today's doesn't exist
         if todayData is None:
             todayData['steps']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
             todayData['calories']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
