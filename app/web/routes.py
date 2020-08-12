@@ -50,13 +50,13 @@ def login():
             return redirect(url_for('web.login'))
     return render_template('/login.html', title='Sign In', form=form)
 
-#user log out, init version create by Devi.
+#user log out, init version create by Devi. I removed flask_login.
 @bp.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('web.index'))
 
-#user register,
+#user register, called the API.
 @bp.route('/register', methods=['GET','POST'])
 def register():
     if 'user' in session:
