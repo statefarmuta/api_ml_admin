@@ -117,13 +117,14 @@ def mydashboard():
         #print(todayData)
         #print(todayData['steps'])
         #print(todayData['steps'][1])
-        #if today's doesn't exist
+        #if today's data doesn't exist
         if todayData is None:
-            todayData['steps']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-            todayData['calories']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-            todayData['heart_rate']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-            todayData['rating']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
             todayTotal=[0,0,0,0]
+            todayData ={'steps':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\
+                'calories':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\
+                'heart_rate':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\
+                'rating':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+               
         else:
             totalsteps=0
             totalcalories=0
