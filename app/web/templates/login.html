@@ -19,6 +19,7 @@
             {% endfor %}
         </p>
         <a href="{{ url_for('web.register') }}">Register an account.</a>
+        <p><a href="{{ url_for('web.reset_request') }}">Forgot My Password.</a></p>
         <p>{{ form.submit() }}</p>
     </form>
     
