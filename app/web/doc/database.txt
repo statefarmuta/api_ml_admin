@@ -1,4 +1,15 @@
+#run mongo shell
+mongo
+
+#use db novutree. if the db doesn't exist, the shell will create one for you. 
+use novutree
+
+#show collections of the db
+show collections 
+
+#if collection 'user_stats' doesn't exist, create one.
 db.createCollection('user_stats')
 
-// change user_id to yours and date to today's date.
+
+# If you want to insert some data to test the my dashboard page, you need to change user_id to your login user's user_id and the date to today's date.
 db.user_stats.insert({"user_id": 325168,     "date": "2020-08-09",     "steps": [         120,         300,         200,         0,         0,         1000,         750,         400,         100,         500,         50,         50,         20,         100,         600,         1000,         200,         90,         20,         35,         10,         100,         50     ],     "calories": [         120,         300,         200,         0,         0,         1000,         750,         400,         100,         500,         50,         50,         20,         100,         600,         1000,         200,         90,         20,         35,         10,         100,         50     ],     "heart_rate": [         120,         300,         200,         0,         0,         1000,         750,         400,         100,         500,         50,         50,         20,         100,         600,         1000,         200,         90,         20,         35,         10,         100,         50     ],     "rating": [         120,         300,         200,         0,         0,         1000,         750,         400,         100,         500,         50,         50,         20,         100,         600,         1000,         200,         90,         20,         35,         10,         100,         50     ] })
