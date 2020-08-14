@@ -1,21 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Reset Password</h1>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reset_request.css') }}">
+
+
+    <div class="center">
+        <p>Reset Password</p>
+    </div>
+
+    <div class="message">
+        <p>Enter the email that you used to register for State Farm Fit. We'll send you an email with your username and a link to reset your password.</p>
+    </div>
     
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        
-        <p>It looks like you have trouble logging in. Enter your Email below and we will send you a link to reset your password. </p>
-        <br>
-        <p>
-            {{ form.email.label }}<br>
-            {{ form.email(size=64) }}<br>
-            {% for error in form.email.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-    <a href="{{ url_for('web.register') }}">SignUp.<br><br></a>
+    <div class="formwrapper">
+            <div class="formpassword">
+                <form class="container" action="" method="post">
+                    {{ form.hidden_tag() }}
+
+                    <div class="formfield">
+                        {{ form.email(size=64) }}<br>
+                        {% for error in form.email.errors %}
+                            <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+
+                    <p>{{ form.submit() }}</p>
+                </form>
+            </div>
+    </div>
 {% endblock %}

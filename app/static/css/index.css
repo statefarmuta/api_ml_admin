@@ -1,0 +1,35 @@
+
+.StateFarmFitImg{
+  position: absolute;
+  padding-top: 100px
+}
+
+h1 {
+  font-family: "Lucida Console", Courier, monospace;
+  background-color: white;
+  color: red;
+  font-size: 20px;
+  position: absolute;
+  right: 200px;
+  top: 200px;
+}
+
+#paragraph{
+  font-family: "Lucida Console", Courier, monospace;
+  background-color: white;
+  color: red;
+  font-size: 18px;
+  padding-left: 1000px;
+  padding-right: 100px;
+  position: absolute;
+  top: 300px;
+}
+
+.register-link {
+  margin: 0;
+  position: absolute;
+  right: 80px;
+  font-family: "Lucida Console", Courier, monospace;
+  color: blue;
+  top: 500px;
+}

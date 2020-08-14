@@ -1,26 +1,39 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Sign In</h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.username.label }}<br>
-            {{ form.username(size=32) }}<br>
-            {% for error in form.username.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
-            {% for error in form.password.errors %}
-            <span style="color: red;">[{{ error }}]</span>
-            {% endfor %}
-        </p>
-        <a href="{{ url_for('web.register') }}">Register an account.</a>
-        <p><a href="{{ url_for('web.reset_request') }}">Forgot My Password.</a></p>
-        <p>{{ form.submit() }}</p>
-    </form>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
     
+    <div>
+        <h1>Log In</h1>
+        
+        <div class="formwrapper">
+            <div class="formlogin">
+                <form class="container" action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <div class="formfield">
+                        {{ form.username.label }}
+                        {{ form.username(size=32) }}<br>
+      
+                        {% for error in form.username.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    <div class="formfield">
+                        {{ form.password.label }}
+                        {{ form.password(size=32) }}<br>
+                        
+                        {% for error in form.password.errors %}
+                        <span style="color: red;">[{{ error }}]</span>
+                        {% endfor %}
+                    </div>
+                    
+
+                    <a class= "password-link" href="{{ url_for('web.reset_request') }}">Forgot password</a><br>
+                    <a class= "register-link" href="{{ url_for('web.register') }}">Don't have an account? Click here to register</a> <br>
+                    
+                    {{ form.submit() }}
+                </form>
+            </div>
+        </div>
+  </div>  
 {% endblock %}
