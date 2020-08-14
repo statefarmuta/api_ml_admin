@@ -15,18 +15,18 @@ class LoginForm(FlaskForm):
 
 
 class RegistrationForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
-    password = PasswordField('password', validators=[DataRequired()])
-    phone = StringField('phone', )
-    fname = StringField('fname', validators=[DataRequired()])
-    lname = StringField('lname', validators=[DataRequired()])
-    gender = SelectField('gender', choices=[('male','male'), ('female','female')], validators=[DataRequired()])
-    address = StringField('address' )
-    city = StringField('city')
-    zipcode = StringField('zipcode')
-    state = StringField('state')
-    submit = SubmitField('register')
+    password = PasswordField('Password', validators=[DataRequired()])
+    phone = StringField('Phone Number', )
+    fname = StringField('First Name', validators=[DataRequired()])
+    lname = StringField('Last Name', validators=[DataRequired()])
+    gender = SelectField('Gender', choices=[('male','male'), ('female','female')], validators=[DataRequired()])
+    address = StringField('Address' )
+    city = StringField('City')
+    zipcode = StringField('Zipcode')
+    state = StringField('State')
+    submit = SubmitField('Register')
 
 class RequestResetForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -37,16 +37,16 @@ class changePasswordForm(FlaskForm):
     submit = SubmitField('Change')
 
 class updateProfileForm(FlaskForm):
-    username = StringField('username', validators=[DataRequired()])
+    username = StringField('Username', validators=[DataRequired()])
     #email = StringField('email', validators=[DataRequired()])
-    fname = StringField('fname', validators=[DataRequired()])
-    lname = StringField('lname', validators=[DataRequired()])
-    bio = StringField('bio')
-    phone = StringField('phone')
-    address = StringField('address' )
-    city = StringField('city')
-    zipcode = StringField('zipcode')
-    state = StringField('state')
+    fname = StringField('First Name', validators=[DataRequired()])
+    lname = StringField('Last Name', validators=[DataRequired()])
+    bio = StringField('Bio')
+    phone = StringField('Phone Number')
+    address = StringField('Address' )
+    city = StringField('City')
+    zipcode = StringField('Zipcode')
+    state = StringField('State')
     submit = SubmitField('Update')
 
     def validate_username(self, username):
