@@ -247,7 +247,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, "Requests.tex", u"Requests Documentation", u"Kenneth Reitz", "manual")
+    (master_doc, "Requests.tex", u"FitBackend", u"Devi Prasad Tripathy", "manual")
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -275,7 +275,7 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, "requests", u"Requests Documentation", [author], 1)]
+man_pages = [(master_doc, "FitBackend", u"FitBackend Documentation", [author], 1)]
 
 # If true, show URL addresses after external links.
 # man_show_urls = False
@@ -289,10 +289,10 @@ man_pages = [(master_doc, "requests", u"Requests Documentation", [author], 1)]
 texinfo_documents = [
     (
         master_doc,
-        "Requests",
-        u"Requests Documentation",
+        "FitBackend",
+        u"FitBackend Documentation",
         author,
-        "Requests",
+        "FitBackend",
         "One line description of project.",
         "Miscellaneous",
     )
