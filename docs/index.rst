@@ -1,5 +1,5 @@
 .. Requests documentation master file, created by
-   sphinx-quickstart on Sun Feb 13 23:54:25 2011.
+   sphinx-quickstart on Fri Aug 14 23:54:25 2020.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -27,6 +27,14 @@ Release v\ |version|. (:ref:`Installation <install>`)
 4. Machine Learning Cron Job
 5. Customer UI View
 
+Code: https://github.com/statefarmuta/api_ml_admin
+Backend API Documentation: THIS DOCUMENT
+
+CustomerUI Documentation: https://github.com/statefarmuta/api_ml_admin/blob/master/app/web/doc/documentation.pdf
+CustomerUI root: https://github.com/statefarmuta/api_ml_admin/tree/master/app/web
+
+MobileTeam Repo: https://github.com/deviprasad97/senior-design-codebase
+MobileTeam Documentation: 
 -------------------
 
 **FitBackend** works as the brain for this project. There are multiple components:
@@ -116,8 +124,8 @@ The User Guide
 --------------
 
 This part of the documentation, which is mostly prose, begins with some
-background information about Requests, then focuses on step-by-step
-instructions for getting the most out of Requests.
+background information about FitBackend, then focuses on step-by-step
+instructions for getting the most out of FitBackend.
 
 .. toctree::
    :maxdepth: 2
