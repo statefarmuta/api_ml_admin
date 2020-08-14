@@ -50,13 +50,13 @@ def login():
             return redirect(url_for('web.login'))
     return render_template('/login.html', title='Sign In', form=form)
 
-#user log out, init version create by Devi.
+#user log out, init version create by Devi. I removed flask_login.
 @bp.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('web.index'))
 
-#user register,
+#user register, called the API.
 @bp.route('/register', methods=['GET','POST'])
 def register():
     if 'user' in session:
@@ -117,13 +117,14 @@ def mydashboard():
         #print(todayData)
         #print(todayData['steps'])
         #print(todayData['steps'][1])
-        #if today's doesn't exist
+        #if today's data doesn't exist
         if todayData is None:
-            todayData['steps']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-            todayData['calories']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-            todayData['heart_rate']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-            todayData['rating']=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
             todayTotal=[0,0,0,0]
+            todayData ={'steps':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\
+                'calories':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\
+                'heart_rate':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],\
+                'rating':[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]}
+               
         else:
             totalsteps=0
             totalcalories=0

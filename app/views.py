@@ -11,7 +11,7 @@ import datetime
 
 
 # Flask modules
-from flask               import Blueprint, render_template, make_response, jsonify, request, url_for, redirect, send_from_directory
+from flask               import Blueprint, render_template, make_response, jsonify, request, url_for, redirect, send_from_directory,flash
 from flask_login         import login_user, logout_user, current_user, login_required
 from werkzeug.exceptions import HTTPException, NotFound, abort
 from werkzeug.utils import secure_filename
@@ -37,10 +37,31 @@ from flask_restful import Resource, Api
 # provide login manager with load_user callback
 @lm.user_loader
 def load_user(user_id):
+    """
+    The function is used to load a user into a session for ADMIN UI.
+    This manages the user session. This is required by flask_login
+
+    Args:
+        None
+
+    Returns:
+        User: returns an User Object to internal Flask LoginManger 
+    """
     return User.get_by_id(int(user_id))
 
 @app.route('/static/<path:path>')
 def send_static(path):
+    """
+    This function is a wildcard api that exposes all the static assets
+    This SHOULD be REMOVED from production. for Swagger UI API testing
+    Must be scoped under OAuth during production
+
+    Args:
+        path (str): path to a resource file
+
+    Returns:
+        resource: requested file is returned if it exists 
+    """
     return send_from_directory('static', path)
 
 SWAGGER_URL = '/swagger'
@@ -58,12 +79,48 @@ app.register_blueprint(swagger_blueprint, url_prefix=SWAGGER_URL)
 # Logout user
 @app.route('/logout')
 def logout():
+    """
+    Logout user
+    This is a GET Method. POST will likely give an error.
+    Args:
+        None
+
+    Returns:
+        redirect: url to the index of the page.
+    """
     logout_user()
     return redirect(url_for('index'))
 
 # Register a new user
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    """
+    Register a new Admin user. SCTRCTLY FOR ADMIN VIEW
+    return a root redirect for the given user clears session.
+    method: GET, POST
+    GET: Returns HTML page (VIEW) for user to enter information
+    POST: API usage, acts a api to register user
+
+    Args:
+        form_data: data retrived from Flask form from the frontend
+
+    Returns:
+        redirect: url to the login page if registration is a success.\n
+        error: message to frontend if registration is a fail
+    form_data = {
+    'name': type=str
+    'lname': type=str)
+    'gender': type=str
+    'phone': type=str
+    'address': type=str
+    'city': type=str
+    'zipcode': type=str
+    'state': type=str
+    username': type=str
+    password': type=str 
+    'email': type=str 
+    }
+    """
     
     # cut the page for authenticated users
     if current_user.is_authenticated:
@@ -121,6 +178,29 @@ def register():
 # Authenticate user
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    """
+    Login a new Admin user. SCTRCTLY FOR ADMIN UI
+    return a root redirect for the given user clears session.\n
+    method: GET, POST \n
+    GET: Returns HTML page (VIEW) for user to enter information\n
+    POST: API usage, acts a api to login user\n
+
+    params should be in a FLASK FORM json format (Form data).\n\n
+
+
+    Args:
+        form_data: data retrived from Flask form from the frontend
+
+    Returns:
+        redirect: url to the login page if registration is a success.\n
+        error: message to frontend if registration is a fail
+
+    form_data = {
+        username': type=str
+        password': type=str 
+    }
+    \n\n
+    """
     
     # cut the page for authenticated users
     if current_user.is_authenticated:
@@ -165,6 +245,42 @@ def login():
 # Authenticate user
 @app.route('/create_project', methods=['POST'])
 def create_project():
+    """
+    Create customer user via ADMIN dashboard
+    Allows an ADMIN user to create customer 
+    through its dashboard and set all DATA required
+    MANUALLY. It created the user and saves all the files
+    required in necessary order.\n\n
+    
+    method: POST\n
+    POST: API usage, acts a api to craete customer user\n
+    params should be in a FLASK FORM json format (Form data).\n\n
+
+    Args:
+        form_data: data retrived from Flask form from the frontend
+        file_1: Data set for the user specifying feature file needed to for time series forecasting
+        file_2: optional file for attributes 
+    
+    Returns:
+        redirect: url for the newely creadted user or redirects to root.
+
+    form_data = {
+    'name': type=str
+    'lname': type=str)
+    'gender': type=str
+    'phone': type=str
+    'address': type=str
+    'city': type=str
+    'zipcode': type=str
+    'state': type=str
+    'username': type=str
+    'password': type=str 
+    'email': type=str 
+    }
+
+    file_1 = file upload from CSV
+    file_2 = file upload from CSV optional
+    """
     
     if not current_user.is_authenticated:
         print('not logged in')
@@ -211,6 +327,22 @@ def create_project():
 
 @app.route('/create_project_sample/<customer_name>', methods=['POST'])
 def create_project_sample(customer_name, user_id=None):
+    """
+    Creates a sample customer user via ADMIN dashboard
+    Allows an ADMIN user to create sample customer 
+    through its dashboard and set all DATA required
+    AUTOMATICALLY. It created the user and saves all the files
+    required in necessary order.\n\n
+    method: POST\n
+    POST: API usage, acts a api to login user\n\n
+
+    Args:
+        customer_name (str): name of the customer name need to be sent in url, like GET
+        user_id (str): Id of the the user need to be sent in url, like GET (optional)
+    
+    Returns:
+        redirect: url for the admin dashboard on success
+    """
     
     if not current_user.is_authenticated:
         if user_id is None:
@@ -244,6 +376,24 @@ def create_project_sample(customer_name, user_id=None):
 @app.route('/dataset_raw_data/<project_id>/<dataset_id>', methods=['GET'])
 @app.route('/dataset_raw_data/<project_id>/<dataset_id>/', methods=['GET'])
 def dataset_raw_data(project_id, dataset_id):
+    """
+    RAW Data exploaration\n
+    Allows an ADMIN user to explore user dataset
+    through its dashboard and see all the raw not pruned data
+    user login status. If dataset not found then redirect 404.\n\n
+
+    method: GET\n
+
+    API/URL must be accessed with GET request and supply project_id and dataset_id in the URL\n
+
+    Args:
+        project_id (str): ID of the poject need to be sent in url. It is made to do so via Front end href
+        dataset_id (str): ID of the dataset need to be sent in url. It is made to do so via Frontend href
+
+    Returns:
+        view: A flask view for the raw data html
+
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -269,6 +419,23 @@ def dataset_raw_data(project_id, dataset_id):
 @app.route('/explore_data/<project_id>/<dataset_id>', methods=['GET'])
 @app.route('/explore_data/<project_id>/<dataset_id>/', methods=['GET'])
 def explore_data(project_id, dataset_id):
+    """
+    Data exploaration\n
+    Allows an ADMIN user to explore user dataset
+    through its dashboard and see all the pruned data with visulization
+    user login status. If dataset not found then redirect 404.\n\n
+
+    method: GET\n
+
+    API/URL must be accessed with GET request and supply project_id and dataset_id in the URL\n
+
+    Args:
+        project_id (str): ID of the poject need to be sent in url. It is made to do so via Front end href
+        dataset_id (str): ID of the dataset need to be sent in url. It is made to do so via Frontend href
+    
+    Returns:
+        view: A view for the proceeseed data html
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -294,6 +461,22 @@ def explore_data(project_id, dataset_id):
 @app.route('/dataset_schema/<project_id>', methods=['GET'])
 @app.route('/dataset_schema/<project_id>/', methods=['GET'])
 def dataset_schema(project_id):
+    """
+    Data Schema mapping\n
+    To allow ADMIN user to set data schema for AUTOML
+    Allows an ADMIN user to change/set data schema for AUTOML\n\n
+
+    method: GET\n
+
+    API/URL must be accessed with GET request and supply project_id in the URL\n
+
+    Args:
+        project_id (str): ID of the poject need to be sent in url. It is made to do so via Front end href
+    
+    Returns:
+        view: a url VIEW the project's data schema mapping after verfying 
+          user login status. If project not found then redirect 404.
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -320,6 +503,23 @@ def dataset_schema(project_id):
 @app.route('/metric_dashboard/<project_id>', methods=['GET'])
 @app.route('/metric_dashboard/<project_id>/', methods=['GET'])
 def metric_dashboard(project_id):
+    """
+    Metric Dashboard \n
+    To allow ADMIN user see all necessary metrics for the project/CUSTOMER user
+    Allows an ADMIN user visualize the Deep Learning model's performance, along side
+    customer's activities.\n\n
+
+    method: GET\n
+
+    API/URL must be accessed with GET request and supply project_id in the URL\n
+
+    Args:
+        project_id (str): ID of the poject need to be sent in url. It is made to do so via Front end href
+    
+    Returns:
+        view: a url VIEW the project's/CUSTOMER's all required metrics and visulization data 
+          user login status. If projectCUSTOMER not found then redirect 404.
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -354,6 +554,23 @@ def metric_dashboard(project_id):
 @app.route('/predictions_dashboard/<project_id>', methods=['GET'])
 @app.route('/predictions_dashboard/<project_id>/', methods=['GET'])
 def predictions_dashboard(project_id):
+    """
+    Predictions Dashboard \n
+    To allow ADMIN user see all necessary metrics for the project/CUSTOMER user
+    Allows an ADMIN user visualize the Deep Learning model's performance, along side
+    customer's activities.\n\n
+
+    method: GET\n
+
+    API/URL must be accessed with GET request and supply project_id in the URL\n
+
+    Args:
+        project_id (str): ID of the poject need to be sent in url. It is made to do so via Front end href
+    
+    Returns:
+        view: a url VIEW the project's/CUSTOMER's all required prediction values and visulization data 
+          give user login status. If project CUSTOMER not found then redirect 404.
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -386,6 +603,19 @@ def predictions_dashboard(project_id):
 @app.route('/project_dashboard', methods=['GET'])
 @app.route('/project_dashboard/', methods=['GET'])
 def project_default():
+    """
+    This is a dummy api to project api resources by 
+    redirecting to root when only /projec_dashboard 
+    or project_dashboard/ is hit\n\n
+    
+    method: GET\n
+
+    Args:
+        None
+
+    Returns: 
+        redirect: url for index/root
+    """
     return redirect(url_for('index'))
 
 
@@ -393,6 +623,27 @@ def project_default():
 @app.route('/project_dashboard/<project_id>', methods=['GET'])
 @app.route('/project_dashboard/<project_id>/', methods=['GET'])
 def project_dashboard(project_id):
+    """
+    Admin Dashboard \n
+    ALlows ADMIN to access project/CUSTOMER user
+    ALlows ADMIN to access project/CUSTOMER user dashboard
+    with all the admin tools to vefiy user pipeline
+    this allows admin to oversee if the user data is present or not
+    Allow to see the status of user Deep Learning model.\n\n
+
+    method: GET\n
+
+    API/URL must be accessed with GET request and supply project_id in the URL\n
+
+    Args:
+        project_id (str): ID of the poject need to be sent in url. It is made to do so via Front end href
+    
+    Returns:
+        view: a url VIEW the project's/CUSTOMER's required params such as
+        Dataset, dataset voliation if present, Deep leanring model status, 
+        Deep learning model metrics, predication metreics. OR if the user is
+        not logged in or CUSTOMER user does not exists then 404 redirect
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -428,6 +679,35 @@ def project_dashboard(project_id):
 @app.route('/auth/customer_dashboard/<project_id>', methods=['GET'])
 @app.route('/auth/customer_dashboard/<project_id>/', methods=['GET'])
 def customer_dashboard(project_id):
+    """
+    STRICT api for mobile team and customer web Ui team to use
+    Retunrs all CUSTOEMR deeplearning model satas. Data set for the CUSTOMER USER
+    if any error occurs then JSON will contain error message. \n\n
+
+    API/URL must be accessed with GET request and supply project_id the URL\n
+
+    method: GET\n
+    Args:
+        project_id (str): ID of the poject/Customer need to be sent in url. It is made to do so via Front end href
+    
+    Returns:
+        response: JSON object
+    
+    On Success \n
+    response = {
+        "data":data, 
+        "project_specific_data":project_specific_data, 
+        "model_info":model_info
+    }
+    \n
+    On Fail:\n
+    response = {
+        'status': 'fail',
+        'message': 'Some error occurred with database. Please try again.'
+    }
+    \n
+    
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
@@ -471,12 +751,37 @@ def customer_dashboard(project_id):
 @app.route('/train_model/<project_id>', methods=['GET'])
 @app.route('/train_model/<project_id>/', methods=['GET'])
 def start_train(project_id):
+    """
+    STRICT API To allow ADMIN user to force sart training for the Deep Leanring Model
+    Allows an ADMIN user to start traning the user Deep LEarning model
+    customer's activities. \n\n
+
+    API/URL must be accessed with GET request and supply project_id the URL\n
+
+    method: GET\n
+
+    Args:
+        project_id (str): ID of the poject/Customer need to be sent in url. It is made to do so via Front end href
+    
+    Returns:
+        response: JSON object
+    
+    On Success \n
+    response = {
+        'result': 'done'
+    }
+    \n
+    On Fail:\n
+    response = {
+        'result': 'error'
+    }
+    \n
+    
+    """
     if not current_user.is_authenticated:
         print('not logged in')
         return redirect(url_for('login'))
     
-    
-
     content = None
     data = None
     data = Project.from_user(current_user.user_id)
@@ -500,6 +805,16 @@ def start_train(project_id):
 @app.route('/', defaults={'path': 'index_new.html'})
 @app.route('/<path>')
 def index(path):
+    """
+    Wildcard view api to allow access to a specified page if the 
+    page exists
+    
+    Args:
+        path (str): path to different html
+    
+    Returns:
+        view: flask view for the requested HTML
+    """
 
     if not current_user.is_authenticated:
         print('not logged in')
@@ -521,11 +836,42 @@ def index(path):
 # Return sitemap 
 @app.route('/sitemap.xml')
 def sitemap():
+    """
+    Wildcard view api to allow access sitemap.
+    """
     return send_from_directory(os.path.join(app.root_path, 'static'), 'sitemap.xml')
 
 @app.route('/auth/verify_email/<user_id>/<email_token>', methods=['GET'])
 @app.route('/auth/verify_email/<user_id>/<email_token>/', methods=['GET'])
 def auth_verify_email(user_id, email_token):
+    """
+    This is used to verfiy user via the link the receive on their email. \n\n
+
+    API/URL must be accessed with GET request and supply user_id and email_token in the URL\n
+
+    method: GET\n
+
+    Args:
+        user_id (str): ID of the poject/Customer need to be sent in url. It is made to do so via email template
+        email_token (str): UUID generated email token need to be sent in url. It is made to do so via email template
+
+    Returns:
+        response: JSON object
+    
+    On Success \n
+    response = {
+            'status': 'success',
+            'message': 'Email verified'
+        }
+    \n
+    On Fail:\n
+    response = {
+            'status': 'fail',
+            'message': 'Email already verified'
+        }
+    \n
+    
+    """
     user = User.get_by_id(int(user_id))
     if user.is_email_verified:
         responseObject = {
@@ -544,9 +890,39 @@ def auth_verify_email(user_id, email_token):
         return make_response(jsonify(responseObject)), 201
 
 # add Rules for API Endpoints
-
 @app.route('/auth/reset_password_request',methods=['POST'])
 def auth_reset_password():
+    """
+    This is used to reset user/admin password
+
+    method: POST\n
+
+    Args:
+        json (JSON): JSON dict with user email
+
+    Returns:
+        response: JSON object
+    
+    On Success \n
+    response = {
+        'status': 'success',
+        'message': 'Reset link sent.'    
+    }
+    \n
+    On Fail 500 with database:\n
+    response = {
+            'status': 'fail',
+            'message': 'Some error occurred with database. Please try again.'
+        }
+    \n
+    On Fail 500 with expection:\n
+    response = {
+            'status': 'fail',
+            'message': 'Try again'
+        }
+    \n
+    
+    """
  # get the post data
     post_data = request.get_json()
     if post_data is  None:
@@ -589,6 +965,21 @@ def auth_reset_password():
 
 @app.route("/reset_token/<token>",methods=['GET','POST'])
 def reset_token(token):
+    """
+    This is used to reset user/admin password after they click rest link
+
+    method: POST, GET\n
+
+    GET: will render the web page
+
+    Args:
+        token (token): UUID generated token
+
+    Returns:
+        redirect: for login
+    
+    
+    """
     user=User.verify_reset_token(token)
     if user is None:
         flash('An invalid token','warning')
@@ -605,6 +996,63 @@ def reset_token(token):
 
 @app.route('/auth/register', methods=['POST'])
 def auth_register():
+    """
+    STRICT API to register a customer USER \n
+
+    method: POST\n
+
+    Args:
+        json (JSON): JSON with user information
+
+    Returns:
+        response (JSON): response JSON
+    \n
+    json = {
+        "fname": "Devi Prasad",
+        "lname": "Tripathy",
+        "gender": "Male",
+        "phone": "6822839655",
+        "address": "914 Greek Row Dr.",
+        "city": "Arlington",
+        "zipcode": "76013",
+        "state": "Texas",
+        "uname": "admin1",
+        "email": "devipt97@gmail.com",
+        "password": "06811@Senior",
+        "profile_pic": true,
+        "bio": "Hey this is fname",
+        "is_admin": false
+    }
+
+    On Success \n
+    response = {
+        'status': 'success',
+        'message': 'Successfully registered.',
+        'auth_token': user_auth.decode(),
+        'user': user_dict
+    }
+    \n
+    On Fail 500 with database:\n
+    response = {
+            'status': 'fail',
+            'message': 'Some error occurred with database. Please try again.'
+        }
+    \n
+    On Fail 500 with expection:\n
+    response = {
+        'status': 'fail',
+        'message': 'Some error occurred. Please try again.'
+    }\n
+    On Fail 202 user exist:\n
+    response = {
+            'status': 'fail',
+            'message': 'User already exists. Please Log in.',
+    }
+    \n
+    
+    
+    """
+
 
     # get the post data
     post_data = request.get_json()
@@ -628,10 +1076,6 @@ def auth_register():
                                  post_data.get('username'), post_data.get('email'), 
                                  pw_hash, post_data.get('is_admin'))
 
-            # # insert the user
-            # db.session.add(user)
-            # db.session.commit()
-            # generate the auth token
             print(user)
             user_dict = user.json()
             responseObject = None
@@ -668,6 +1112,50 @@ def auth_register():
 
 @app.route('/auth/login', methods=['POST'])
 def auth_login():
+
+    """
+    STRICT API to login a customer USER \n
+
+    method: POST\n
+
+    Args:
+        json (JSON): JSON with user login information
+
+    Returns:
+        response (JSON): response JSON
+    \n
+    json = {
+        "username":"admin",
+        "password":"06811@Senior"
+    }
+
+    On Success \n
+    response = {
+        'status': 'success',
+        'message': 'Successfully registered.',
+        'auth_token': auth_token.decode(),
+        'user': user_dict
+    }
+    \n
+    On Fail 500 with database:\n
+    response = {
+            'status': 'fail',
+            'message': 'Some error occurred with database. Please try again.'
+        }
+    \n
+    On Fail 500 with expection:\n
+    response = {
+        'status': 'fail',
+        'message': 'Try again'
+    }\n
+    On Fail 404 user exist:\n
+    response = {
+            'status': 'fail',
+            'message': 'User does not exist or not verified.',
+    }
+    \n
+    
+    """
     # get the post data
     post_data = request.get_json()
     if post_data is None:
@@ -704,6 +1192,9 @@ def auth_login():
 
 @app.route('/auth/status', methods=['GET'])
 def user_view():
+    """
+    Returns the user health info when Authorization token is present in the heeader
+    """
     # get the auth token
     auth_header = request.headers.get('Authorization')
     data = request.get_json()
@@ -753,6 +1244,9 @@ def user_view():
 
 @app.route('/auth/user_info', methods=['GET', 'POST'])
 def user_info():
+    """
+    Returns the user profile info when Authorization token is present in the heeader
+    """
     # get the auth token
     auth_header = request.headers.get('Authorization')
     if auth_header:
@@ -791,6 +1285,9 @@ def user_info():
 
 @app.route('/auth/logout', methods=['POST'])
 def auth_logout():
+    """
+    Logs out a user when Authorization token is present in the heeader
+    """
     # get auth token
     auth_header = request.headers.get('Authorization')
     print(auth_header)

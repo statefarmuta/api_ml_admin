@@ -1,0 +1,39 @@
+<p class="logo">
+  <a href="{{ pathto(master_doc) }}">
+    <img class="logo" src="{{ pathto('_static/inge.jpg', 1) }}" title="" />
+  </a>
+</p>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css" />
+<style>
+  .algolia-autocomplete {
+    width: 100%;
+    height: 1.5em
+  }
+
+  .algolia-autocomplete a {
+    border-bottom: none !important;
+  }
+
+  #doc_search {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+<input id="doc_search" placeholder="Search the doc" autofocus />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js" onload="docsearch({
+  apiKey: 'f177061e2354c50a97bfc635e827ffab',
+  indexName: 'python-requests',
+  inputSelector: '#doc_search',
+  debug: false // Set debug to true if you want to inspect the dropdown
+})" async></script>
+
+<p>
+  FitBackend is made for UTA Senior Design Project
+</p>
+<p>Sponsored by <strong><a href="https://statefarm.com">State Farm</a></strong>.</p>
+
+
+
+  <script async type="text/javascript"
+    src="//cdn.carbonads.com/carbon.js?zoneid=1673&serve=C6AILKT&placement=pythonrequestsorg"
+    id="_carbonads_js"></script>
