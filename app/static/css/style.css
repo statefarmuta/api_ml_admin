@@ -1,0 +1,108 @@
+body
+{
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+  background: white;
+}
+
+.container
+{
+	display: table;
+  	width: 100%;
+}
+
+.container .leftHalf
+{
+	position: absolute;
+  	left: 0px;
+  	width: 50%;
+} 
+
+.container .rightHalf
+{
+	position: absolute;
+  	right: 0px;
+  	width: 50%;
+  	height: 100%
+}
+
+.container .leftHalf .barChartDiv
+{
+    display: block;
+    padding: 5px;
+    padding-left: 50px;
+    max-width: 500px;
+    max-height: 300px;
+}
+           	
+.container .leftHalf .lineChartDiv{
+    display: block;
+    padding: 5px;
+    padding-left: 50px;
+    max-width: 500px;
+    max-height: 300px;
+}
+
+.container .rightHalf .healthScore
+{
+	position: relative;
+	top: 35%;
+	left: 20%;
+	border-radius: 25px;
+  	border: 2px solid red;
+  	width: 300px;
+  	height: 150px; 
+  	display: flex;
+  	justify-content: center;
+  	align-items: center;
+}
+
+.container .rightHalf .healthScore h1
+{
+	font-size: 16px;
+	padding: 5px;
+}
+
+.container .rightHalf .healthScore p
+{
+  margin: 0;
+  position: absolute;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.container .rightHalf .box 
+{
+	width: 25%;
+	float: left;
+	display: inline-block;
+}
+
+.container .rightHalf .box h2
+{
+	text-align: center;
+	color: black;
+	text-transform: uppercase;
+	font-size: 15px;
+}
+.container .rightHalf .box .chart
+{
+	position: relative;
+	width: 120px;
+	height: 120px;
+	margin: 0 auto;
+	text-align: center;
+	font-size: 15px;
+	line-height: 120px;
+	color: black;
+}
+
+.container .rightHalf  .box canvas
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+

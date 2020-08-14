@@ -1,0 +1,52 @@
+
+input{
+    font-family: "Lucida Console", Courier, monospace;
+    font-size: 1.5rem;
+    padding: 10px;
+}
+
+
+input[type=text]{
+    background: white;
+    color: gray;
+    transition: 0.3s 0s ease-out;
+    border:none;
+    
+}
+
+input[type=text]:focus{
+    background: white;
+    color: gray;
+    transition: 0.3s 0s ease-out;
+    border:none;
+    
+}
+
+
+input [type=submit]{
+    background-color: red;
+    color: white;
+    transition: 0.3s 0.0s ease-out;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 12px;
+    width: 250px;
+  
+}
+
+input[type=submit]:hover, input[type=submit]:focus{
+    background: white;
+    color: red;
+    transition: 0.3s 0s ease-out;
+    border:none;
+    width: 250px;
+}
+
+
+
+.content{
+    display: flex;
+    justify-items: center;
+    justify-content: center;
+}

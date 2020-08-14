@@ -1,0 +1,45 @@
+h1{
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 10px;
+    font-size: 40px;
+    font-family: "Lucida Console", Courier, monospace;
+    color: gray;
+}
+
+.formregister form {
+    display: grid;
+    grid-template-columns: 1fr;
+
+}
+
+.formfield {
+    margin-bottom: 1rem;
+    padding-left: 10px;
+      
+}
+
+.formfield label {
+    margin-bottom: 1rem;
+    color: gray;
+    font-family: "Lucida Console", Courier, monospace;
+}
+
+.container {
+  padding-left:10px;
+  margin:0;
+  max-width: 300px;
+}
+
+input [type=submit]{
+    padding-left:15px;
+    background-color: red;
+    color: white;
+    transition: 0.3s 0.0s ease-out;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-size: 12px;
+    width: 250px;
+  
+}

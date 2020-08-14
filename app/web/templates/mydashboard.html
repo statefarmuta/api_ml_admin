@@ -1,17 +1,160 @@
 <!DOCTYPE html>
 {% extends "base.html" %}
-
 {% block content %}
-  <h1>This is my dashboard.</h1>
-  <h1>Total Steps: {{ totalToday[0]}}</h1>
-  <h1>Total calories: {{ totalToday[1]}}</h1>                                    
-  <h1>Total heart_rate: {{ totalToday[2]}}</h1>
-  <h1>Total rating: {{ totalToday[3]}}</h1> 
-  <h1>Steps 0: {{ todayData['steps'][0]}}</h1>
-  <h1>calories 0: {{ todayData['calories'][0]}}</h1>                                    
-  <h1>heart_rate 0: {{ todayData['heart_rate'][0]}}</h1>
-  <h1>rating 0: {{ todayData['rating'][0]}}</h1> 
+<html>
+    <head>
+    	<script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/jquery.easypiechart.js') }}"></script>
+    	<script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    </head>
+    
+    <body>    
+        <div class="container">
 
+        	<div class="leftHalf">
+	        	<div class="barChartDiv">
+	            	<canvas id="myChart1" width='500' height='300'></canvas>
+	        	</div>
 
+	        	<div class="lineChartDiv">
+	            	<canvas id="myChart2" width='500' height='300'></canvas>
+	        	</div>
+	        </div>
 
+	        <div class="rightHalf">
+	        	
+			    <div class="box">
+			        <br><br><br><br>
+			        
+					<div class="chart" data-percent="37">{{ totalToday[0] }}</div>
+						<h2>Total Steps</h2>
+						<br><br><br><br><br><br><br><br><br><br>
+
+					<div class="chart" data-percent="80">{{ totalToday[1] }}</div>
+						<h2>Calories Burned</h2>
+				</div>
+
+				<div class="healthScore">
+					<h1 class="heading">Your current health score is: </h1><br>
+					<p class="score">{{ totalToday[3] }}</p>
+				</div>
+
+			
+			</div>
+			
+
+        </div>
+
+        
+		<script>
+	    	$(function() {
+		        $('.chart').easyPieChart({
+		            size: 120,
+		            barColor: '#17d3e6',
+		            scaleColor: false,
+		            lineWidth: 10,
+		            trackColor:'#373737',
+		            animate: 2000
+		        });
+	    	});
+		</script>
+
+		<script>
+			let labels1 = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00',
+			'09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']; 
+			let data1 = [
+			            {% for item in todayData['steps'] %}
+			               "{{ item }}",
+			              {% endfor %}
+				    ];
+			let colors1 = ['#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA',
+			'#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA'];
+
+			let myChart1 = document.getElementById("myChart1").getContext('2d');
+
+			let chart1 = new Chart (myChart1, {
+			    type: 'bar',
+			    
+			    data: {
+			        labels: labels1,
+			        datasets: [{
+			            data: data1,
+			            backgroundColor: colors1
+			        }]
+			    },
+			    
+			    options:{
+			        title:{
+			            text: "Total Steps per hour",
+			            display:true
+			        },
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero: true
+			                }
+			            }]
+			        },
+			        legend: {
+			            display: false
+			        }
+			    }
+
+			});
+
+			let labels2 = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00',
+			'09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']; 
+			let data2 = [{% for item in todayData['heart_rate'] %}
+			               "{{ item }}",
+			              {% endfor %}];
+			let colors2 = ['#49A9EA'];
+
+			let myChart2 = document.getElementById("myChart2").getContext('2d');
+
+			let chart2 = new Chart (myChart2, {
+			    type: 'line',
+			    
+			    data: {
+			        labels: labels2,
+			        datasets: [{
+			            lineTension: 0.1,
+			            backgroundColor: "rgba(75,192,192,0.4)",
+			            borderColor: "rgba(75,192,192,1)",
+			            pointBorderColor:"rgba(75,192,192,1)",
+			            pointBackgroundColor: "#fff",
+			            pointBorderWidth: 1,
+			            pointHoverRadius: 5,
+			            pointHoverBackgroundColor: "rgba(75,192,192,1)",
+			            fill: false,
+			            data: data2,
+			            backgroundColor: colors2
+			        }]
+			    },
+			    
+			    options:{
+			        title:{
+			            text: "Average heart rate",
+			            display:true
+			        },
+			        scales: {
+			            yAxes: [{
+			                ticks: {
+			                    beginAtZero: true
+			                }
+			            }]
+			        },
+			        legend: {
+			            display: false
+			        }
+			    }
+
+			});
+
+		</script>
+        
+
+    </body>
+                                      
+</html>
 {% endblock %}
