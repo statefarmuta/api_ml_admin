@@ -27,14 +27,14 @@ Release v\ |version|. (:ref:`Installation <install>`)
 4. Machine Learning Cron Job
 5. Customer UI View
 
-Code: https://github.com/statefarmuta/api_ml_admin
-Backend API Documentation: THIS DOCUMENT
+| Code: https://github.com/statefarmuta/api_ml_admin \n
+| Backend API Documentation: THIS DOCUMENT
+| 
+| CustomerUI Documentation: https://github.com/statefarmuta/api_ml_admin/blob/master/app/web/doc/documentation.pdf
+| CustomerUI root: https://github.com/statefarmuta/api_ml_admin/tree/master/app/web
 
-CustomerUI Documentation: https://github.com/statefarmuta/api_ml_admin/blob/master/app/web/doc/documentation.pdf
-CustomerUI root: https://github.com/statefarmuta/api_ml_admin/tree/master/app/web
-
-MobileTeam Repo: https://github.com/deviprasad97/senior-design-codebase
-MobileTeam Documentation: 
+| MobileTeam Repo: https://github.com/deviprasad97/senior-design-codebase
+| MobileTeam Documentation: https://github.com/deviprasad97/senior-design-codebase/blob/master/MobileTeamDocumentation.docx
 -------------------
 
 **FitBackend** works as the brain for this project. There are multiple components:
