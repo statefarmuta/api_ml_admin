@@ -1,75 +1,53 @@
-
 <html>
     <head>
         <style type="text/css">
             body {
-              font-family: arial;
-                  background:#fff;
+                margin:0;
+                padding:0;
+                background: white;
             }
-          
-            table {
-              border: 1px solid #ccc;
-              width: 80%;
-              margin:0;
-              padding:0;
-              border-collapse: collapse;
-              border-spacing: 0;
-              margin: 0 auto;
+            
+            nav {
+                width: 100%;
+                height: 76px;
+                background: white;
+                overflow: auto;
             }
-          
-            table tr {
-              border: 1px solid #ddd;
-              padding: 5px;
+
+            ul {
+                padding-top: 10;
+                margin: 0 0 0 150px;
+                list-style:none;
             }
-          
-            table th, table td {
-              padding: 10px;
-              text-align: left;
-            }
-          
-            table th {
-              text-transform: uppercase;
-              font-size: 14px;
-              letter-spacing: 1px;
-            }
-          
-            @media screen and (max-width: 600px) {
-          
-              table {
-                border: 0;
-              }
-          
-              table thead {
-                display: none;
-              }
-          
-              table tr {
-                margin-bottom: 10px;
-                display: block;
-                border-bottom: 2px solid #ddd;
-              }
-          
-              table td {
-                display: block;
-                text-align: right;
-                font-size: 13px;
-                border-bottom: 1px dotted #ccc;
-              }
-          
-              table td:last-child {
-                border-bottom: 0;
-              }
-          
-              table td:before {
-                content: attr(data-label);
+            
+            li {
                 float: left;
-                text-transform: uppercase;
-                font-weight: bold;
-              }
             }
-          
-          .note{max-width: 80%; margin: 0 auto;}
-              </style>
+
+            .logo img {
+                position: absolute;
+                margin-top: 0px;
+                margin-left: 0px;
+            
+            }
+            
+            nav a {
+                width: 100px;
+                display: block;
+                padding: 20px 15px;
+                text-decoration: none;
+                font-family: Arial;
+                color: red;
+                text-align:center;
+            }
+            
+            nav a:hover {
+                background: red;
+                transition: 0.5s;
+                text-transform: uppercase;
+                color:white;
+            }
+        </style>
         {% if title %}
         <title>{{ title }} - Statefarm Fitbit internal system</title>
         {% else %}
@@ -77,18 +55,28 @@
         {% endif %}
     </head>
     <body>
-        <div>
-            <img src="https://static1.st8fm.com/en_US/img/logos/state-farm-logo-red.svg" alt="" width="160" height="100">
-            <a href="{{ url_for('web.index') }}">Home</a>
+        <div class="logo"><a href="#"><img src="/static/images/statefarmlogo.png"></a>
+
             {% if 'user' in session %}
-            <a href="{{ url_for('web.mydashboard') }}">My Dashboard</a>
-            <a href="{{ url_for('web.myprofile') }}">My Profile</a>
-            <a href="{{ url_for('web.logout') }}">Logout</a>
+            <nav>
+                <ul>
+                    <li> <a href="{{ url_for('web.mydashboard') }}">My Dashboard</a> </li>
+                    <li> <a href="{{ url_for('web.myprofile') }}">My Profile</a> </li>
+                    <li> <a href="{{ url_for('web.logout') }}">Logout</a> </li>
+                </ul>
+            </nav>
             {% else %}
-            <a href="{{ url_for('web.login') }}">Login</a>
+            <nav>
+                <ul>
+                    <li> <a href="{{ url_for('web.index')}}"> Home </a> </li>
+                    <li> <a href="{{ url_for('web.register')}}"> Register </a> </li>
+                    <li> <a href="{{ url_for('web.login')}}"> Log In </a> </li>
+                </ul>
+            </nav>
+                           
             {% endif %}
-        </div>
-        <hr>
+               
+        
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>

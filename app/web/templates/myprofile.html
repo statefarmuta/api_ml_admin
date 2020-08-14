@@ -2,45 +2,143 @@
 {% extends "base.html" %}
 
 {% block content %}
-<table>
- 
-<tr>
-  <td>
-    <p>Username: {{ user.uname }}</p>
-    <img src="{{url_for('web.request_file',filename=user['profile_pic'])}}" style="width:160px;height:160px;">
-    <form action = "http://0.0.0.0:5000/web/uploader" method = "POST" 
-         enctype = "multipart/form-data">
-         <input type = "file" name = "profile_pic" />
-         <input type = "submit" value ="Upload"/>
-    </form>
-    
-    <p>First Name: {{ user.fname }} , Last Name: {{ user.lname }}</p>
-    <p>Gender: {{ user.gender }}</p>
-    <p>Bio: {{ user.bio }}</p>
-    
-  </td>               
-</tr>
-<tr>
-  <td>
-    <p>Email: {{ user.email }}</p>
-    <p>PhoneNumber: {{ user.phone }}</p>
-  </td>                
-</tr>
-<tr>
-  <td>
-    <p>Addess: {{ user.address}}</p> 
-    <p>City: {{ user.city}} State:{{ user.zip}}</p> 
-    <p>Zipcode: {{ user.zip}}</p>
-  </td>              
-</tr>
-<tr>
-  <td>
-<p><a href="{{ url_for('web.edit_profile') }}">Edit Profile</a></p> 
-<p><a href="{{ url_for('web.change_password') }}">Change Password</a></p>
-</td>              
-</tr>
 
-</table>
+<html>
+<head>
+  <style type="text/css">
+    
+    h1
+    {
+      margin-right: auto;
+      margin-left: auto;
+      text-align: center;
+      padding-top: 90px;
+      font-size: 40px;
+      font-family: "Lucida Console", Courier, monospace;
+      color: gray;
+    }
+
+    .profilePic 
+    { 
+      position: absolute;
+      padding-left: 660px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .browseButton
+    {
+      position: absolute;
+      padding-left: 550px;
+      padding-top: 180px; 
+    }
+
+    table
+    {
+      margin-top: 240px;
+      width: 50%;
+      margin-left:auto; 
+      margin-right:auto;
+      padding-bottom: 10px;
+    }
+
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      font-family: "Lucida Console", Courier, monospace;
+
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+    }
+
+    tr:nth-child(even) 
+    {
+      background-color: #dddddd;
+    }
+
+  </style>
+</head>
+  <body>
+    <!--<link rel="stylesheet" href="{{ url_for('static', filename='css/myprofile.css') }}">-->
+    <h1>My Profile Information</h1>
+    <div class="profilePic">
+      <img  src="{{url_for('web.request_file',filename=user['profile_pic'])}}" style="width:160px;height:160px;">
+
+    </div>
+    <div class="browseButton">
+      <form action = "http://0.0.0.0:5000/web/uploader" method = "POST" enctype = "multipart/form-data">
+        <input type = "file" name = "profile_pic" />
+        <input type = "submit" value ="Upload"/>
+      </form>
+    </div>
+   
+    
+    <table>
+     
+      <tr>
+        <td>
+          Username: {{ user.uname }}    
+        </td>               
+      </tr>
+
+      <tr>
+        <td>
+          First Name: {{ user.fname }}
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          Last Name: {{ user.lname }}
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          Bio: {{ user.bio }}
+        </td>
+      </tr>
+      
+      <tr>
+        <td>
+          Gender: {{ user.gender }}
+        </td>
+      </tr>
+
+      <tr>
+        <td>
+          Email: {{ user.email }}
+        </td>                
+      </tr>
+      <tr>
+        <td>
+          Phone Number: {{ user.phone }}
+        </td>
+      </tr>
+      <tr>
+        <td>
+          Address: {{ user.address}}, {{ user.city}}, {{ user.state}} {{ user.zip}}
+        </td>              
+      </tr>
+
+      <tr>
+        <td>
+          <p><a href="{{ url_for('web.edit_profile') }}">Edit Profile</a></p> 
+          <p><a href="{{ url_for('web.change_password') }}">Change Password</a></p>
+        </td>              
+      </tr>
+
+    </table>
+    
+  </body>
+</html>
+
+
+
+
 
                                       
 

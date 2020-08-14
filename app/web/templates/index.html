@@ -1,7 +1,12 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block content %}
-    <h1>Introducing State Farm Fit</h1>
-    <div id="paragraph"><p>State Farm's first health and fitness tracking app.</p>
-    <p>Track your health and fitness to potentially receive a discounted life insurance rate!</p></div>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+<h1>Introducing State Farm Fit</h1>
+<div id="paragraph"><p>State Farm's first health and fitness tracking app.</p>
+<p>Track your health and fitness to potentially receive a discounted life insurance rate!</p></div>
+<a class= "register-link" href="{{ url_for('web.register') }}">Click here to register and start saving money!</a> <br>
+<img class="StateFarmFitImg" src="/static/images/StateFarmFit.png">
+
 {% endblock %}
