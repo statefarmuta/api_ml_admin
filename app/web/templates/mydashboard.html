@@ -2,159 +2,907 @@
 {% extends "base.html" %}
 {% block content %}
 <html>
-    <head>
-    	<script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
-    	<script src="{{ url_for('static', filename='js/jquery.easypiechart.js') }}"></script>
-    	<script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
-		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
-    </head>
-    
-    <body>    
-        <div class="container">
 
-        	<div class="leftHalf">
-	        	<div class="barChartDiv">
-	            	<canvas id="myChart1" width='500' height='300'></canvas>
-	        	</div>
+<head>
+	<script src="{{ url_for('static', filename='js/jquery-3.5.1.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/jquery.easypiechart.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/Chart.min.js') }}"></script>
+	<script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
 
-	        	<div class="lineChartDiv">
-	            	<canvas id="myChart2" width='500' height='300'></canvas>
-	        	</div>
-	        </div>
+<body onload="GetDateTime();">
 
-	        <div class="rightHalf">
-	        	
-			    <div class="box">
-			        <br><br><br><br>
-			        
-					<div class="chart" data-percent="37">{{ totalToday[0] }}</div>
-						<h2>Total Steps</h2>
-						<br><br><br><br><br><br><br><br><br><br>
+	<div class="container">
 
-					<div class="chart" data-percent="80">{{ totalToday[1] }}</div>
-						<h2>Calories Burned</h2>
-				</div>
-
-				<div class="healthScore">
-					<h1 class="heading">Your current health score is: </h1><br>
-					<p class="score">{{ totalToday[3] }}</p>
-				</div>
-
-			
+		<div class="leftHalf">
+			<br><br><br><br><br><br><br><br><br><br>
+			<div
+				style="position:absolute;left:110px;width:100% right:10px; top:80px;border: 1px solid green;border-radius: 25px">
+				<h1 class="heading">Health Score:</h1><br>
+				
 			</div>
+			<button id="refresh" onclick="Refresh()"> zoom out</button>
+			<div class="barChartDiv">
+				<canvas id="StepChart1" width='500' height='300'></canvas>
+			</div>
+
+			<div
+				style="padding-left:315px;">
+				<a href="#" class="previous round">&#8249;</a>
+				<a href="#" class="next round">&#8250;</a>
+			</div>
+			<div class="lineChartDiv">
+				<canvas id="HeartChart2" width='500' height='300'></canvas>
+			</div>
+
+			<div class="lineChartDiv">
+				<canvas id="CaloriesChart" width='500' height='300'></canvas>
+			</div>
+			<div class="lineChartDiv">
+				<canvas id="DistanceChart" width='500' height='300'></canvas>
+			</div>
+			<div class="lineChartDiv">
+				<canvas id="FloorsChart" width='500' height='300'></canvas>
+			</div>
+			<div class="lineChartDiv">
+				<canvas id="ElevationChart" width='500' height='300'></canvas>
+			</div>
+
+		</div>
+
+
+		<div class="rightHalf">
+			<br><br>
+			<label for="start">Start date:</label>
+
+			<input type="date" id="start">
+			<label for="end">End date:</label>
+
+			<input type="date" id="end">
+			<button id="refresh" onclick="GetData()">Get Info</button>
+
+
+			<div class="pieChartDiv">
+				<canvas id="ActivityChart" width='300' height='100'></canvas>
+			</div>
+			<br>
+			<div class="pieChartDiv">
+				<canvas id="SleepTimeChart" width='300' height='100'></canvas>
+			</div>
+			<br>
+			<div class="pieChartDiv">
+				<canvas id="SleepChart" width='300' height='100'></canvas>
+			</div>
+
+
+
+		</div>
+
+
+
+
+
+
+
+
+	</div>
+<script>
+//this function finds the current day to display as a default value for the calender
+function GetDateTime() {
+
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = yyyy + '-' + mm + '-' + dd;
+document.getElementById('start').value = today;
+
+}
+</script>
+
+	<script>
+
+		let labelsactivity = ['Sedentary', 'Lightly Active', "Very Active","Fairly Active"];
+		let activitychart = document.getElementById("ActivityChart").getContext('2d');
+
+		let activitychart1 = new Chart(activitychart, {
+			type: 'doughnut',
+
+			data: {
+				datasets: [{
+					data: [{{ todayData[5] }},{{ todayData[6] }},{{ todayData[7] }}, {{ todayData[8] }} ],
+					backgroundColor: ["rgba(0,0,255,0.5)", "rgba(0,255,0,0.5)", "rgba(255,0,0,0.5)"]
+				}],
+				labels: ['Sedentary', 'LightlyActive', 'VeryActive','Fairly Active']
+			},
+
+			options: {
+				title: {
+					text: "Activity Breakdown",
+					display: true
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				centertext: "0"
+
+			}
+
+		});
+		Chart.pluginService.register({
+			beforeDraw: function (chart) {
+				if (chart.options.centertext) {
+					var width = chart.chart.width,
+						height = chart.chart.height,
+						ctx = chart.chart.ctx;
+
+					ctx.restore();
+					var fontSize = (height / 144).toFixed(2); // was: 114
+					ctx.font = fontSize + "em sans-serif";
+					ctx.textBaseline = "middle";
+
+					var text = chart.options.centertext, // "75%",
+						textX = Math.round((width - ctx.measureText(text).width) / 2),
+						textY = height / 2 - (chart.titleBlock.height - 70);
+
+
+					ctx.fillText(text, textX, textY);
+					ctx.save();
+
+
+				}
+			}
+		});
+
+	</script>
+
+	<script>
+
+		let sleepchart = document.getElementById("SleepChart").getContext('2d');
+		let Awake = {{ Sleep[0] }};
+		let Light ={{ Sleep[1] }};
+		let Deep = {{ Sleep[2] }}
+		let Rem = {{ Sleep[3] }};
+		console.log(Awake);
+		let sleepchart1 = new Chart(sleepchart, {
+			type: 'doughnut',
+
+			data: {
+				datasets: [{
+					data: [Awake, Rem, Light, Deep],
+					backgroundColor: ["rgba(0,0,255,0.5)", "rgba(0,255,0,0.5)", "rgba(255,255,0,0.5)", "rgba(255,0,0,0.5)"]
+				}],
+				labels: ['Hours Awake', 'Hours of REM Sleep', 'Hours of Light Sleep', 'Hours of Deep Sleep']
+			},
+
+			options: {
+				title: {
+					text: "Sleep Breakdown",
+					display: true
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				plugins: {
+					labels: {
+						render: 'value',
+						fontStyle: 'bold',
+						shadowBlur: '0'
+					}
+
+				},
+				centertext: {{ Summary[2] }}
+
+			}
+
+		});
+
+	</script>
+
+	<script>
+
+		let sleeptimechart = document.getElementById("SleepTimeChart").getContext('2d');
+
+
+
+		let sleeptimechart1 = new Chart(sleeptimechart, {
+			type: 'doughnut',
+
+			data: {
+				datasets: [{
+					data: [0, 9],
+					backgroundColor: ["rgba(0,255,0,0.5)", "rgba(255,0,0,0.5)"]
+				}],
+				labels: ['Hours Slept', 'Hours Awake']
+			},
+
+			options: {
+				title: {
+					text: 'Hours Slept',
+					display: true
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				},
+				plugins: {
+					labels: {
+						render: 'value',
+						fontStyle: 'bold',
+						shadowBlur: '0'
+					}
+
+				},
+				centertext: "0"
+
+			}
+
+		});
+
+	</script>
+
+
+	<script>
+		let labels1 = [...Array(24)].map((_, i) => i + 1);
+		let data1 = [
+			{% for item in todayData[1] %}
+		"{{ item }}",
+			{% endfor %}
+				    ];
+
+		let myChart1 = document.getElementById("StepChart1").getContext('2d');
+
+		let chart1 = new Chart(myChart1, {
+			type: 'line',
+
+			data: {
+				labels: labels1,
+				datasets: [{
+					data: data1,
+					lineTension: 0.1,
+					backgroundColor: 'rgba(63, 191, 191,0.5)',
+					borderColor: "rgba(75,192,192,1)",
+					pointBorderColor: "rgba(75,192,192,1)",
+					pointBackgroundColor: "#fff",
+					pointBorderWidth: 1,
+					pointHoverRadius: 5,
+					pointHoverBackgroundColor: "rgba(75,192,192,1)",
+					fill: false,
+				}]
+			},
+
+			options: {
+				title: {
+					text: "Total Steps per hour",
+					display: true
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Steps'
+						}
+					}],
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+				},
+				legend: {
+					display: false
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				}
+			}
+
+		});
+
+		let labels2 = ['00:00', '01:00', '02:00', '03:00', '04:00', '05:00', '06:00', '07:00', '08:00',
+			'09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00', '22:00', '23:00'];
+		let data2 = [{% for item in todayData[9] %}
+		"{{ item }}",
+			{% endfor %}];
+		let colors2 = [];
+
+		for (let heartrate in data2) {
+		  if(data2[heartrate]>100)
+		 {
+		 	colors2.push('rgba(255, 0, 0, 1)');
+		  }
+		  else if(data2[heartrate]<60)
+		 {
+		 	colors2.push('rgba(0, 85, 0,1)');
+
+		  }
+		  else if(data2[heartrate]>=60 || data2[heartrate]<=100)
+		  {
+			colors2.push('rgba(255, 0, 0,1)');
+		  }
+
+		}
+		
+
+		let myChart2 = document.getElementById("HeartChart2").getContext('2d');
+
+		let chart2 = new Chart(myChart2, {
+			type: 'line',
+
+			data: {
+				labels: labels2,
+				datasets: [{
+					lineTension: 0.1,
+					backgroundColor: colors2,
+					borderColor: colors2,
+					pointBorderColor: colors2,
+					pointBackgroundColor: colors2,
+					pointBorderWidth: 1,
+					pointHoverRadius: 5,
+					pointHoverBackgroundColor: colors2,
+					fill: false,
+					data: data2,
+
+				}]
+			},
+
+			options: {
+				title: {
+					text: "Heart Rate",
+					display: true
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Heart Rate'
+						}
+					}],
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+				},
+				legend: {
+					display: false
+				},
+				hover: {
+					mode: 'nearest',
+					intersect: true
+				}
+			}
+
+		});
+
+
+
+
+		let labels3 = [...Array(24)].map((_, i) => i + 1);;
+		let data3 = [{% for item in todayData[0] %}
+		"{{ item }}",
+			{% endfor %}];
+		let colors3 = ['#49A9EA'];
+
+		let myChart3 = document.getElementById("CaloriesChart").getContext('2d');
+
+		let chart3 = new Chart(myChart3, {
+			type: 'line',
+
+			data: {
+				labels: labels3,
+				datasets: [{
+					lineTension: 0.1,
+					backgroundColor: 'rgba(63, 191, 191,0.5)',
+					borderColor: "rgba(75,192,192,1)",
+					pointBorderColor: "rgba(75,192,192,1)",
+					pointBackgroundColor: "#fff",
+					pointBorderWidth: 1,
+					pointHoverRadius: 5,
+					pointHoverBackgroundColor: "rgba(75,192,192,1)",
+					fill: false,
+					data: data3,
+					backgroundColor: colors2
+				}]
+			},
+
+			options: {
+				title: {
+					text: "Calories Burned",
+					display: true
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Calories'
+						}
+					}],
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+				},
+				legend: {
+					display: false
+				}
+			}
+
+		});
+
+
+		let labels4 = [...Array(24)].map((_, i) => i + 1);;
+		let data4 = [{% for item in todayData[2] %}
+		"{{ item }}",
+			{% endfor %}];
+		let colors4 = ['rgba(63, 191, 191,0.5)'];
+
+		let myChart4 = document.getElementById("DistanceChart").getContext('2d');
+
+		let chart4 = new Chart(myChart4, {
+			type: 'line',
+
+			data: {
+				labels: labels4,
+				datasets: [{
+					lineTension: 0.1,
+					borderColor: "rgba(75,192,192,1)",
+					pointBorderColor: "rgba(75,192,192,1)",
+					pointBackgroundColor: "#fff",
+					pointBorderWidth: 1,
+					pointHoverRadius: 5,
+					pointHoverBackgroundColor: "rgba(75,192,192,1)",
+					fill: false,
+					data: data4,
+					backgroundColor: colors4
+				}]
+			},
+
+			options: {
+				title: {
+					text: "Distance Covered",
+					display: true
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Distance'
+						}
+					}],
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+				},
+				legend: {
+					display: false
+				}
+			}
+
+		});
+
+
+		let labels5 = [...Array(24)].map((_, i) => i + 1);
+		let data5 = [{% for item in todayData[3] %}
+		"{{ item }}",
+			{% endfor %}];
+		let colors5 = ['#49A9EA'];
+
+		let myChart5 = document.getElementById("FloorsChart").getContext('2d');
+
+		let chart5 = new Chart(myChart5, {
+			type: 'line',
+
+			data: {
+				labels: labels4,
+				datasets: [{
+					lineTension: 0.1,
+					backgroundColor: 'rgba(63, 191, 191,0.5)',
+					borderColor: "rgba(75,192,192,1)",
+					pointBorderColor: "rgba(75,192,192,1)",
+					pointBackgroundColor: "#fff",
+					pointBorderWidth: 1,
+					pointHoverRadius: 5,
+					pointHoverBackgroundColor: "rgba(75,192,192,1)",
+					fill: false,
+					data: data5,
+					backgroundColor: colors4
+				}]
+			},
+
+			options: {
+				title: {
+					text: "Floors Covered",
+					display: true
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						},
+						scaleLabel: {
+							display: true,
+							labelString: 'Floors'
+						}
+					}],
+					xAxes: [{
+						display: true,
+						scaleLabel: {
+							display: true,
+							labelString: 'Time'
+						}
+					}],
+				},
+				legend: {
+					display: false
+				}
+			}
+
+		});
+	</script>
+
+	<script>
+		setInterval(function () {
+			$.ajax({
+				url: "/web/data",
+				type: 'GET',
+				success: function (res) {
+					//parse our response
+					var Calories = res.calories;
+					var Steps = res.steps;
+					var CaloriesBMR = res.caloriesBMR;
+					var Distance = res.distance;
+					var Floors = res.floors;
+					//update our charts dynamically by changing the data	
+					chart1.data.datasets[0].data = Steps;
+					chart2.data.datasets[0].data = CaloriesBMR;
+					chart3.data.datasets[0].data = Calories;
+					chart4.data.datasets[0].data = Distance;
+					chart5.data.datasets[0].data = Floors;
+					chart1.update();
+					chart2.update();
+					chart3.update();
+					chart4.update();
+					chart5.update();
+				}
+			});
+		}, 40000);
+
+		function Refresh() {
+			var StartDate = $('#start').val().split('/');
+			var EndDate = $('#end').val().split('/');
 			
 
-        </div>
+			$.ajax({
+				url: "/web/weekdata",
+				type: "POST",
+				data: {
+					'Start': StartDate,
+					'End': EndDate
+				},
+				success: function (res) {
+					//var Calories=res.calories;
+					WeeklyFitbitSummary = res.WeeklySummary
+					WeeklySleepData = res.WeeklySleep
+					WeeklyDaily = res.WeeklyHourly
+					HeartRate = []
+					Calories = []
+					Steps = []
+					Distance = []
+					Floors = []
+					Elevation = []
+					Sleep = [0, 0, 0, 0]
+					SleepHours = [0, 0]
+					var i;
+					for (i = 0; i < WeeklyDaily.length; i++) {
+						Calories.push(WeeklyDaily[i][0]);
+						Steps.push(WeeklyDaily[i][1]);
+						Distance.push(WeeklyDaily[i][2]);
+						Floors.push(WeeklyDaily[i][3]);
+						Elevation.push(WeeklyDaily[i][4]);
+						HeartRate.push(WeeklyDaily[i][9]);
 
-        
-		<script>
-	    	$(function() {
-		        $('.chart').easyPieChart({
-		            size: 120,
-		            barColor: '#17d3e6',
-		            scaleColor: false,
-		            lineWidth: 10,
-		            trackColor:'#373737',
-		            animate: 2000
-		        });
-	    	});
-		</script>
+					}
+					for (i = 0; i < WeeklySleepData.length; i++) {
+						Sleep[0] = parseFloat(Sleep[0]) + parseFloat(WeeklySleepData[i][0]);
+						Sleep[1] = parseFloat(Sleep[1]) + parseFloat(WeeklySleepData[i][1]);
+						Sleep[2] = parseFloat(Sleep[2]) + parseFloat(WeeklySleepData[i][2]);
+						Sleep[3] = parseFloat(Sleep[3]) + parseFloat(WeeklySleepData[i][3]);
 
-		<script>
-			let labels1 = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00',
-			'09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']; 
-			let data1 = [
-			            {% for item in todayData['steps'] %}
-			               "{{ item }}",
-			              {% endfor %}
-				    ];
-			let colors1 = ['#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA',
-			'#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA','#49A9EA'];
+					}
 
-			let myChart1 = document.getElementById("myChart1").getContext('2d');
+					for (i = 0; i < WeeklyFitbitSummary.length; i++) {
+						SleepHours[0] = parseFloat(SleepHours[0]) + parseFloat(WeeklyFitbitSummary[i][6])
+						SleepHours[0] = (parseFloat(SleepHours[0]) / 60).toFixed(2);
+						console.log(WeeklyFitbitSummary[i][6]);
 
-			let chart1 = new Chart (myChart1, {
-			    type: 'bar',
-			    
-			    data: {
-			        labels: labels1,
-			        datasets: [{
-			            data: data1,
-			            backgroundColor: colors1
-			        }]
-			    },
-			    
-			    options:{
-			        title:{
-			            text: "Total Steps per hour",
-			            display:true
-			        },
-			        scales: {
-			            yAxes: [{
-			                ticks: {
-			                    beginAtZero: true
-			                }
-			            }]
-			        },
-			        legend: {
-			            display: false
-			        }
-			    }
 
+					}
+
+					SleepHours[1] = 63;
+
+
+					Sleep[0] = Sleep[0].toFixed(2)
+					Sleep[1] = Sleep[1].toFixed(2)
+					Sleep[2] = Sleep[2].toFixed(2)
+					Sleep[3] = Sleep[3].toFixed(2)
+
+					//var Steps=res.steps;
+					//var Rating=res.rating;
+					//var HoursSlept=res.hours_slept;
+					//var HeartRate= res.heart_rate;
+					chart1.data.datasets[0].data = Steps;
+					chart2.data.datasets[0].data = HeartRate;
+					chart3.data.datasets[0].data = Calories;
+					chart4.data.datasets[0].data = Distance;
+					chart5.data.datasets[0].data = Floors;
+
+					sleepchart1.data.datasets[0].data = Sleep;
+					sleeptimechart1.data.datasets[0].data = SleepHours
+
+					chart1.data.labels = res.Dates;
+					chart2.data.labels = res.Dates;
+					chart3.data.labels = res.Dates;
+					chart4.data.labels = res.Dates;
+					chart5.data.labels = res.Dates;
+					//console.log(res)
+					chart1.update();
+					chart2.update();
+					chart3.update();
+					chart4.update();
+					chart5.update();
+					sleepchart1.update();
+					sleeptimechart1.update();
+
+
+					//$("#refresh").text("Weekly Summary");
+				}
 			});
 
-			let labels2 = ['00:00','01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00',
-			'09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00','19:00','20:00','21:00','22:00','23:00']; 
-			let data2 = [{% for item in todayData['heart_rate'] %}
-			               "{{ item }}",
-			              {% endfor %}];
-			let colors2 = ['#49A9EA'];
 
-			let myChart2 = document.getElementById("myChart2").getContext('2d');
+		}
+		
+		function GetData() {
+			var StartDate = $('#start').val().split('/');
+			var EndDate = $('#end').val().split('/');
+			$.ajax({
+				url: "/web/datedata",
+				type: "POST",
+				data: {
+					'Start' : StartDate,
+					'End' : EndDate
+				},
+				success: function (res){
+					console.log(res);
+					WeeklyFitbitSummary = res.Summary
+					WeeklySleepData = res.SleepData
+					WeeklyDaily = res.Daily
+					HeartRate = []
+					Calories = []
+					Steps = []
+					Distance = []
+					Floors = []
+					Elevation = []
+					Sleep = [0, 0, 0, 0]
+					SleepHours = [0, 0]
+					ActivityHours=[0,0,0,0]
+					colorsHeartRate=[]
+					colorsSteps=[]
+					colorsDistance=[]
+					colorsFloors=[]
+					colorsElevation=[]
+					colorsCalories=[]
+					var i;
+					//go through our weekly array
+					for (i = 0; i < WeeklyDaily.length; i++) {
+						Calories.push(WeeklyDaily[i][0]);
+						Steps.push(WeeklyDaily[i][1]);
+						Distance.push(WeeklyDaily[i][2]);
+						Floors.push(WeeklyDaily[i][3]);
+						Elevation.push(WeeklyDaily[i][4]);
+						HeartRate.push(WeeklyDaily[i][9]);
+						console.log(WeeklyDaily[i][9]);
+						//check the heartrate and determine the color to push to the graph's colors array
+						if(parseFloat(WeeklyDaily[i][9])<60 || parseFloat(WeeklyDaily[i][9]>100))
+						{
+							colorsHeartRate.push('rgba(255, 0, 0, 1)');
+						}
+						else
+						{
+							colorsHeartRate.push('rgba(0, 255, 0, 1)');
+						}
+						
+						if(parseFloat(WeeklyDaily[i][1])>0)
+						{
+							colorsSteps.push('rgba(0, 255, 0, 1)');
 
-			let chart2 = new Chart (myChart2, {
-			    type: 'line',
-			    
-			    data: {
-			        labels: labels2,
-			        datasets: [{
-			            lineTension: 0.1,
-			            backgroundColor: "rgba(75,192,192,0.4)",
-			            borderColor: "rgba(75,192,192,1)",
-			            pointBorderColor:"rgba(75,192,192,1)",
-			            pointBackgroundColor: "#fff",
-			            pointBorderWidth: 1,
-			            pointHoverRadius: 5,
-			            pointHoverBackgroundColor: "rgba(75,192,192,1)",
-			            fill: false,
-			            data: data2,
-			            backgroundColor: colors2
-			        }]
-			    },
-			    
-			    options:{
-			        title:{
-			            text: "Average heart rate",
-			            display:true
-			        },
-			        scales: {
-			            yAxes: [{
-			                ticks: {
-			                    beginAtZero: true
-			                }
-			            }]
-			        },
-			        legend: {
-			            display: false
-			        }
-			    }
+						}
+						else
+						{
+							colorsSteps.push('rgba(255, 0, 0, 1)');
+						}
+						if(parseFloat(WeeklyDaily[i][0])>0)
+						{
+							colorsCalories.push('rgba(0, 255, 0, 1)');
 
+						}
+						else
+						{
+							colorsCalories.push('rgba(255, 0, 0, 1)');
+						}
+
+						if(parseFloat(WeeklyDaily[i][2])>0)
+						{
+							colorsDistance.push('rgba(0, 255, 0, 1)');
+
+						}
+						else
+						{
+							colorsDistance.push('rgba(255, 0, 0, 1)');
+						}
+						if(parseFloat(WeeklyDaily[i][3])>0)
+						{
+							colorsFloors.push('rgba(0, 255, 0, 1)');
+
+						}
+						else
+						{
+							colorsFloors.push('rgba(255, 0, 0, 1)');
+						}
+						if(parseFloat(WeeklyDaily[i][4])>0)
+						{
+							colorsElevation.push('rgba(0, 255, 0, 1)');
+
+						}
+						else
+						{
+							colorsElevation.push('rgba(255, 0, 0, 1)');
+						}
+						//check if 
+						if(WeeklyDaily[i][5]==undefined)
+						{
+							continue;
+						}
+						else
+						{
+							ActivityHours[0]=ActivityHours[0]+parseInt(WeeklyDaily[i][5]);
+							ActivityHours[1]=ActivityHours[1]+parseInt(WeeklyDaily[i][6]);
+							ActivityHours[2]=ActivityHours[2]+parseInt(WeeklyDaily[i][7]);
+							ActivityHours[3]=ActivityHours[3]+parseInt(WeeklyDaily[i][8]);
+						}
+					}
+					console.log(ActivityHours)
+					//collect the Sleep stages information ie [rem,etc]
+					for (i = 0; i < WeeklySleepData.length; i++) {
+						Sleep[0] = parseFloat(Sleep[0]) + parseFloat(WeeklySleepData[i][0]);
+						Sleep[1] = parseFloat(Sleep[1]) + parseFloat(WeeklySleepData[i][1]);
+						Sleep[2] = parseFloat(Sleep[2]) + parseFloat(WeeklySleepData[i][2]);
+						Sleep[3] = parseFloat(Sleep[3]) + parseFloat(WeeklySleepData[i][3]);
+
+					}
+
+					for (i = 0; i < WeeklyFitbitSummary.length; i++) {
+						//check if the sleep field is empty in the response
+						if(WeeklyFitbitSummary[i][6] === undefined)
+						{
+							continue;
+
+						}
+						//sum up sleep and convert from minutes to hours
+						SleepHours[0] = parseFloat(SleepHours[0]) + parseFloat(WeeklyFitbitSummary[i][6])
+						SleepHours[0] = (parseFloat(SleepHours[0]) / 60).toFixed(2);
+
+
+					}
+
+					SleepHours[1] = 63-parseFloat(SleepHours[0]);
+
+
+					Sleep[0] = Sleep[0].toFixed(2)
+					Sleep[1] = Sleep[1].toFixed(2)
+					Sleep[2] = Sleep[2].toFixed(2)
+					Sleep[3] = Sleep[3].toFixed(2)
+
+					//var Steps=res.steps;
+					//var Rating=res.rating;
+					//var HoursSlept=res.hours_slept;
+					//var HeartRate= res.heart_rate;
+					chart1.data.datasets[0].data = Steps;
+					chart1.data.datasets[0].backgroundColor=colorsSteps;
+					chart1.data.datasets[0].borderColor=colorsSteps;
+					chart1.data.datasets[0].pointBorderColor=colorsSteps;
+					chart1.data.datasets[0].backgroundColor=colorsSteps;
+					chart1.data.datasets[0].pointBackgroundColor=colorsSteps;
+
+
+					chart2.data.datasets[0].data = HeartRate;
+
+					//adjust the Heart rate chart's colors
+					chart2.data.datasets[0].backgroundColor=colorsHeartRate;
+					chart2.data.datasets[0].borderColor=colorsHeartRate;
+					chart2.data.datasets[0].pointBorderColor=colorsHeartRate;
+					chart2.data.datasets[0].backgroundColor=colorsHeartRate;
+					chart2.data.datasets[0].pointBackgroundColor=colorsHeartRate;
+
+
+					chart3.data.datasets[0].data = Calories;
+					chart3.data.datasets[0].backgroundColor=colorsCalories;
+					chart3.data.datasets[0].borderColor=colorsCalories;
+					chart3.data.datasets[0].pointBorderColor=colorsCalories;
+					chart3.data.datasets[0].backgroundColor=colorsCalories;
+					chart3.data.datasets[0].pointBackgroundColor=colorsCalories;
+
+					chart4.data.datasets[0].data = Distance;
+					chart4.data.datasets[0].backgroundColor=colorsDistance;
+					chart4.data.datasets[0].borderColor=colorsDistance;
+					chart4.data.datasets[0].pointBorderColor=colorsDistance;
+					chart4.data.datasets[0].backgroundColor=colorsDistance;
+					chart4.data.datasets[0].pointBackgroundColor=colorsDistance;
+
+
+					chart5.data.datasets[0].data = Floors;
+					chart5.data.datasets[0].backgroundColor=colorsFloors;
+					chart5.data.datasets[0].borderColor=colorsFloors;
+					chart5.data.datasets[0].pointBorderColor=colorsFloors;
+					chart5.data.datasets[0].backgroundColor=colorsFloors;
+					chart5.data.datasets[0].pointBackgroundColor=colorsFloors;					
+
+					sleepchart1.data.datasets[0].data = Sleep;
+					sleeptimechart1.data.datasets[0].data = SleepHours;
+					activitychart1.data.datasets[0].data=ActivityHours;
+
+					chart1.data.labels = res.Dates;
+					chart2.data.labels = res.Dates;
+					chart3.data.labels = res.Dates;
+					chart4.data.labels = res.Dates;
+					chart5.data.labels = res.Dates;
+					//console.log(res)
+					chart1.update();
+					chart2.update();
+					chart3.update();
+					chart4.update();
+					chart5.update();
+					sleepchart1.update();
+					sleeptimechart1.update();
+					activitychart1.update();
+
+				}
 			});
 
-		</script>
-        
+		}
 
-    </body>
-                                      
+	</script>
+
+
+</body>
+
 </html>
 {% endblock %}
