@@ -1006,51 +1006,7 @@ def auth_register():
 
     Returns:
         response (JSON): response JSON
-    \n
-    json = {
-        "fname": "Devi Prasad",
-        "lname": "Tripathy",
-        "gender": "Male",
-        "phone": "6822839655",
-        "address": "914 Greek Row Dr.",
-        "city": "Arlington",
-        "zipcode": "76013",
-        "state": "Texas",
-        "uname": "admin1",
-        "email": "devipt97@gmail.com",
-        "password": "06811@Senior",
-        "profile_pic": true,
-        "bio": "Hey this is fname",
-        "is_admin": false
-    }
-
-    On Success \n
-    response = {
-        'status': 'success',
-        'message': 'Successfully registered.',
-        'auth_token': user_auth.decode(),
-        'user': user_dict
-    }
-    \n
-    On Fail 500 with database:\n
-    response = {
-            'status': 'fail',
-            'message': 'Some error occurred with database. Please try again.'
-        }
-    \n
-    On Fail 500 with expection:\n
-    response = {
-        'status': 'fail',
-        'message': 'Some error occurred. Please try again.'
-    }\n
-    On Fail 202 user exist:\n
-    response = {
-            'status': 'fail',
-            'message': 'User already exists. Please Log in.',
-    }
-    \n
-    
-    
+  
     """
 
 
@@ -1065,8 +1021,22 @@ def auth_register():
 
     # filter User out of database through username
     user_by_email = User.get_by_email(post_data.get('email'))
+    
+    if user:
+        responseObject = {
+            'status': 'fail',
+            'message': 'UserId already Exits'
+        }
+        return make_response(jsonify(responseObject)), 409
 
-    if not user and not user_by_email :
+    elif user_by_email:
+        responseObject = {
+            'status': 'fail',
+            'message': 'Email already Exists'
+        }
+        return make_response(jsonify(responseObject)), 409
+    
+    elif not user and not user_by_email :
         try:
             pw_hash = post_data.get('password') #bc.generate_password_hash(password)
             user, user_auth = User.register(post_data.get('name'), post_data.get('lname'), 
@@ -1103,12 +1073,6 @@ def auth_register():
             }
             print(e)
             return make_response(jsonify(responseObject)), 401
-    else:
-        responseObject = {
-            'status': 'fail',
-            'message': 'User already exists. Please Log in.',
-        }
-        return make_response(jsonify(responseObject)), 202
 
 @app.route('/auth/login', methods=['POST'])
 def auth_login():
@@ -1123,37 +1087,6 @@ def auth_login():
 
     Returns:
         response (JSON): response JSON
-    \n
-    json = {
-        "username":"admin",
-        "password":"06811@Senior"
-    }
-
-    On Success \n
-    response = {
-        'status': 'success',
-        'message': 'Successfully registered.',
-        'auth_token': auth_token.decode(),
-        'user': user_dict
-    }
-    \n
-    On Fail 500 with database:\n
-    response = {
-            'status': 'fail',
-            'message': 'Some error occurred with database. Please try again.'
-        }
-    \n
-    On Fail 500 with expection:\n
-    response = {
-        'status': 'fail',
-        'message': 'Try again'
-    }\n
-    On Fail 404 user exist:\n
-    response = {
-            'status': 'fail',
-            'message': 'User does not exist or not verified.',
-    }
-    \n
     
     """
     # get the post data
@@ -1164,9 +1097,9 @@ def auth_login():
     try:
         # fetch the user data
         user = User.get_by_username(post_data.get('username'))
-        user_dict = user.json()
         if user and user.password == post_data.get('password') and user.is_email_verified:
             auth_token = user.encode_auth_token(user.user_id)
+	    user_dict = user.json()
             if auth_token:
                 responseObject = {
                     'status': 'success',
@@ -1175,12 +1108,27 @@ def auth_login():
                     'user': user_dict
                 }
                 return make_response(jsonify(responseObject)), 201
+		
+	elif user and user.password == post_data.get('password') and user.is_email_verified != 'true':
+            responseObject = {
+                'status' : 'fail',
+                'message' : 'Email Not Verified'
+            }
+            return make_response(jsonify(responseObject)), 400
+
+        elif user and user.password != post_data.get('password') and user.is_email_verified:
+            responseObject = {
+                'status' : 'fail',
+                'message' : 'Invalid Username or Password'
+            }
+            return make_response(jsonify(responseObject)), 401	
+	    
         else:
             responseObject = {
                 'status': 'fail',
-                'message': 'User does not exist or not verified.'
+                'message': 'User does not exist'
             }
-            return make_response(jsonify(responseObject)), 404
+            return make_response(jsonify(responseObject)), 401
     except Exception as e:
         print(e)
         responseObject = {
