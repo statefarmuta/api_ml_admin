@@ -1,4 +1,4 @@
-from sklearn.neural_network import MLPClassifier
+from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score
 import pandas as pd
 import numpy as np
@@ -24,8 +24,9 @@ scaler.fit(X_train)
 X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
+
 # perform the training
-model = MLPClassifier(hidden_layer_sizes=(500, 250, 200), max_iter=5000, alpha=0.0001, solver='lbfgs', verbose=10, random_state=1)
+model = XGBClassifier()
 model.fit(X_train, y_train)
 
 # compute testing results
@@ -68,6 +69,7 @@ print("% of differed by 1: " + str(diff_1/r*100))
 print("% of differed by 2: " + str(diff_2/r*100))
 print("% of differed by 3: " + str(diff_3/r*100))
 print("% of differed by 4: " + str(diff_4/r*100))
+
 
 '''
 test_sample = [31,2177,11.3,3648,2.7,3,9,80,96]
