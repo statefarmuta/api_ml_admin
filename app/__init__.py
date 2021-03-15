@@ -45,8 +45,8 @@ app.register_blueprint(web_bp,url_prefix='/web')
 
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'ingenuity.senior@gmail.com'
-app.config['MAIL_PASSWORD'] = '06811@Senior'
+app.config['MAIL_USERNAME'] = 'teamaerouta@gmail.com'
+app.config['MAIL_PASSWORD'] = 'Statefarm@123'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 mail = Mail(app)

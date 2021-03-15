@@ -8,6 +8,7 @@ Copyright (c) 2019 - Devi
 import os, logging 
 import uuid
 import datetime
+import boto3
 
 
 # Flask modules
@@ -75,6 +76,41 @@ swagger_blueprint = get_swaggerui_blueprint(
 )
 
 app.register_blueprint(swagger_blueprint, url_prefix=SWAGGER_URL)
+
+
+# Retrieve user health score
+@app.route('/score/<user>', methods=['GET'])
+def getScore(user):
+    file = open("aws.txt") # S3 credentials
+    text = file.readline()
+    text = text.rstrip("\n")
+    tokens = text.split(',')
+
+    # Get ML file from S3
+    session = boto3.Session(aws_access_key_id=tokens[2],
+                            aws_secret_access_key=tokens[3],
+                            region_name=tokens[1])
+    s3 = session.resource('s3')
+    obj = s3.Object('mobilebucket', 'ml_user_scores.csv')
+    body = obj.get()['Body'].read()
+    body = body.decode('utf-8') # Byte to string
+
+    # Scan body for user ID
+    score = 0
+    tokens = body.split("\r\n")
+    for line in tokens:
+        line2 = line.split(',') # Split individual line
+        if line2[0] == user:
+            score = line2[1]
+            break # Stop looping
+
+
+    # Return value from file
+    response = make_response(jsonify({'score':score}))
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+
 
 # Logout user
 @app.route('/logout')
@@ -1099,7 +1135,7 @@ def auth_login():
         user = User.get_by_username(post_data.get('username'))
         if user and user.password == post_data.get('password') and user.is_email_verified:
             auth_token = user.encode_auth_token(user.user_id)
-	    user_dict = user.json()
+            user_dict = user.json()
             if auth_token:
                 responseObject = {
                     'status': 'success',
@@ -1109,7 +1145,7 @@ def auth_login():
                 }
                 return make_response(jsonify(responseObject)), 201
 		
-	elif user and user.password == post_data.get('password') and user.is_email_verified != 'true':
+        elif user and user.password == post_data.get('password') and user.is_email_verified != 'true':
             responseObject = {
                 'status' : 'fail',
                 'message' : 'Email Not Verified'

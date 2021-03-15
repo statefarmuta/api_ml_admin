@@ -72,10 +72,10 @@ class User(UserMixin, object):
         return (self.user_id)
 
     def email_auth(self):
-        print("in email auth")
+        print("Creating registration email")
         token = uuid.uuid4().hex
-        links = ['http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com/auth/verify_email/'+str(self.user_id)+'/'+token, 
-                 'http://ec2-54-214-218-104.us-west-2.compute.amazonaws.com:5000/auth/verify_email/'+str(self.user_id)+'/'+token,
+        links = ['http://ec2-3-19-30-128.us-east-2.compute.amazonaws.com/auth/verify_email/'+str(self.user_id)+'/'+token, 
+                 'http://ec2-3-19-30-128.us-east-2.compute.amazonaws.com:5000/auth/verify_email/'+str(self.user_id)+'/'+token,
                  'http://127.0.0.1:5000/auth/verify_email/'+str(self.user_id)+'/'+token
         ]
         Database.insert(collection='email_token', data={'user_id':self.user_id, 'email_token':token})

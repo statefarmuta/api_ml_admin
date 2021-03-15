@@ -322,9 +322,11 @@ def updateData():
     todayData = mongo.db.user_stats.find_one(
         {'user_id': session['user'].uid, 'date': today.strftime("%Y-%m-%d")})
     # read our data file to get data
-    user_id = 123
+    #user_id = 123
+    user_id = session['user'].uid
     file_String = "HealthData/"+str(user_id)+"_"+str(today)+".txt"
     file = open("123_data.txt")
+    #file = open(file_String)
     text = file.readlines()
     if todayData is None:
         todayTotal = [0, 0, 0, 0]
